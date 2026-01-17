@@ -1,8 +1,7 @@
 import { Input } from './input';
 import { useEnterKeyBlur } from '@/hooks/useEnterKeyBlur';
 
-interface InputWithErrorProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputWithErrorProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
@@ -23,7 +22,7 @@ export function InputWithError({
           onKeyDown?.(e);
         }}
       />
-      {error && <p className='text-xs text-red-700 mt-1'>{error}</p>}
+      {error && <p className="text-xs text-red-700 mt-1">{error}</p>}
     </div>
   );
 }

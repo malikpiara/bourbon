@@ -92,34 +92,34 @@ export function PaymentSection({ form }: PaymentSectionProps) {
     Math.abs(firstPayment + secondPayment - total) < 0.01;
 
   return (
-    <Card className='w-full animate-slide-fade'>
+    <Card className="w-full animate-slide-fade">
       <CardHeader>
         <CardTitle>Pagamentos</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className='space-y-8'>
+        <div className="space-y-8">
           {/* Total Amount Display */}
-          <div className='flex justify-between items-center bg-muted p-4 rounded-lg'>
-            <span className='font-semibold'>Valor Total:</span>
-            <span className='font-semibold text-lg'>
+          <div className="flex justify-between items-center bg-muted p-4 rounded-lg">
+            <span className="font-semibold">Valor Total:</span>
+            <span className="font-semibold text-lg">
               {formatCurrency(total)}
             </span>
           </div>
 
           {/* Payment Split Slider */}
-          <div className='space-y-3'>
-            <Label className='text-muted-foreground'>
+          <div className="space-y-3">
+            <Label className="text-muted-foreground">
               Distribuição dos Pagamentos
             </Label>
-            <div className='pt-4'>
+            <div className="pt-4">
               <Slider
                 value={[sliderValue]}
                 onValueChange={handleSliderChange}
                 max={100}
                 step={1}
-                className='mb-6 cursor-grab'
+                className="mb-6 cursor-grab"
               />
-              <div className='flex justify-between text-primary'>
+              <div className="flex justify-between text-primary">
                 <span>{sliderValue}%</span>
                 <span>{100 - sliderValue}%</span>
               </div>
@@ -127,19 +127,19 @@ export function PaymentSection({ form }: PaymentSectionProps) {
           </div>
 
           {/* First Payment */}
-          <div className='space-y-4'>
-            <div className='flex items-center justify-between'>
-              <div className='flex-1'>
-                <h3 className='text-base font-semibold mb-1'>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h3 className="text-base font-semibold mb-1">
                   Pagamento no acto de venda
                 </h3>
-                <div className='text-sm text-muted-foreground'>
+                <div className="text-sm text-muted-foreground">
                   {format(orderDate, "d 'de' MMMM 'de' yyyy", { locale: pt })}
                 </div>
               </div>
               <Input
-                type='text'
-                className='w-32 text-right'
+                type="text"
+                className="w-32 text-right"
                 value={formatCurrency(firstPayment).replace('€', '')}
                 onChange={(e) => handlePaymentChange(e.target.value, true)}
               />
@@ -152,8 +152,8 @@ export function PaymentSection({ form }: PaymentSectionProps) {
                 form.setValue('paymentType', value)
               }
             >
-              <SelectTrigger className='w-full'>
-                <SelectValue placeholder='Selecione o Método de Pagamento' />
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione o Método de Pagamento" />
               </SelectTrigger>
               <SelectContent>
                 {PAYMENT_TYPES.map((type) => (
@@ -166,15 +166,15 @@ export function PaymentSection({ form }: PaymentSectionProps) {
           </div>
 
           {/* Second Payment */}
-          <div className='flex items-center justify-between'>
-            <div className='flex-1'>
-              <h3 className='text-base font-semibold mb-1'>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="text-base font-semibold mb-1">
                 Pagamento no acto de entrega
               </h3>
             </div>
             <Input
-              type='text'
-              className='w-32 text-right'
+              type="text"
+              className="w-32 text-right"
               value={formatCurrency(secondPayment).replace('€', '')}
               onChange={(e) => handlePaymentChange(e.target.value, false)}
             />
@@ -182,8 +182,8 @@ export function PaymentSection({ form }: PaymentSectionProps) {
 
           {/* Warning if payments don't match total */}
           {!paymentsMatchTotal && (
-            <Alert variant='destructive'>
-              <AlertTriangle className='h-4 w-4' />
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 A soma dos pagamentos (
                 {formatCurrency(firstPayment + secondPayment)}) não coincide com

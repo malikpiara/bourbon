@@ -88,16 +88,16 @@ const CountrySelect = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          type='button'
-          variant='outline'
-          className='flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10'
+          type="button"
+          variant="outline"
+          className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
           disabled={disabled}
         >
           <FlagComponent
             country={selectedCountry}
             countryName={selectedCountry}
           />
-          <span className='text-sm'>
+          <span className="text-sm">
             +{RPNInput.getCountryCallingCode(selectedCountry)}
           </span>
           <ChevronsUpDown
@@ -108,11 +108,11 @@ const CountrySelect = ({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className='w-[300px] p-0'>
+      <PopoverContent className="w-[300px] p-0">
         <Command>
-          <CommandInput placeholder='Search country...' />
+          <CommandInput placeholder="Search country..." />
           <CommandList>
-            <ScrollArea className='h-72'>
+            <ScrollArea className="h-72">
               <CommandEmpty>No country found.</CommandEmpty>
               <CommandGroup>
                 {countryList.map(({ value, label }) =>
@@ -147,10 +147,10 @@ const CountrySelectOption = ({
   onChange,
 }: CountrySelectOptionProps) => {
   return (
-    <CommandItem className='gap-2' onSelect={() => onChange(country)}>
+    <CommandItem className="gap-2" onSelect={() => onChange(country)}>
       <FlagComponent country={country} countryName={countryName} />
-      <span className='flex-1 text-sm'>{countryName}</span>
-      <span className='text-sm text-foreground/50'>{`+${RPNInput.getCountryCallingCode(
+      <span className="flex-1 text-sm">{countryName}</span>
+      <span className="text-sm text-foreground/50">{`+${RPNInput.getCountryCallingCode(
         country
       )}`}</span>
       <CheckIcon
@@ -166,7 +166,7 @@ const FlagComponent = ({ country, countryName }: RPNInput.FlagProps) => {
   const Flag = flags[country];
 
   return (
-    <span className='flex h-4 w-6 overflow-hidden rounded-sm bg-foreground/20 [&_svg]:size-full'>
+    <span className="flex h-4 w-6 overflow-hidden rounded-sm bg-foreground/20 [&_svg]:size-full">
       {Flag && <Flag title={countryName} />}
     </span>
   );

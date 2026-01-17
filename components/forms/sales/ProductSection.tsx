@@ -32,7 +32,7 @@ function ProductSection({ form, className }: ProductSectionProps) {
       {/* Section for the table with the list of products */}
       <FormField
         control={form.control}
-        name='tableEntries'
+        name="tableEntries"
         render={({ fieldState: { error } }) => (
           <FormItem>
             <FormControl>
@@ -41,13 +41,13 @@ function ProductSection({ form, className }: ProductSectionProps) {
 
             {/* Error handling section */}
             {error && (
-              <div className='space-y-2' role='alert' aria-live='polite'>
+              <div className="space-y-2" role="alert" aria-live="polite">
                 {error.type === 'too_small' ? (
-                  <p className='text-sm font-medium text-destructive'>
+                  <p className="text-sm font-medium text-destructive">
                     {ERROR_MESSAGES.TOO_SMALL}
                   </p>
                 ) : (
-                  <p className='text-sm font-medium text-destructive'>
+                  <p className="text-sm font-medium text-destructive">
                     {ERROR_MESSAGES.INVALID_FIELDS}
                   </p>
                 )}
@@ -60,14 +60,14 @@ function ProductSection({ form, className }: ProductSectionProps) {
       {/* Notes or Observations Section */}
       <FormField
         control={form.control}
-        name='notes'
+        name="notes"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Observações</FormLabel>
             <FormControl>
               <Textarea
-                className='resize-none'
-                placeholder='Adicione aqui notas importantes sobre a encomenda...'
+                className="resize-none"
+                placeholder="Adicione aqui notas importantes sobre a encomenda..."
                 {...field}
               />
             </FormControl>

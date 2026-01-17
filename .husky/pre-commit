@@ -1,0 +1,2 @@
+# pnpm test - We will eventually write tests.
+pnpm lint-staged

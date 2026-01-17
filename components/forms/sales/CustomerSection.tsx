@@ -45,20 +45,20 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
   return (
     <div className={`space-y-8 ${className || ''}`}>
-      <h2 className='scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'>
+      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
         Dados do Cliente
       </h2>
 
       {/* Basic Customer Information - Always Shown */}
       <FormField
         control={form.control}
-        name='name'
+        name="name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Nome</FormLabel>
             <FormControl>
               <Input
-                autoComplete='false'
+                autoComplete="false"
                 {...field}
                 onKeyDown={handleEnterKey}
                 onBlur={(e) => {
@@ -79,7 +79,7 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
       <FormField
         control={form.control}
-        name='email'
+        name="email"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
@@ -87,8 +87,8 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
             </FormLabel>
             <FormControl>
               <Input
-                type='email'
-                autoComplete='new-password'
+                type="email"
+                autoComplete="new-password"
                 {...field}
                 onKeyDown={handleEnterKey}
                 value={field.value || ''}
@@ -104,7 +104,7 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
       <FormField
         control={form.control}
-        name='phoneNumber'
+        name="phoneNumber"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
@@ -112,9 +112,9 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
             </FormLabel>
             <FormControl>
               <PhoneInput
-                type='tel'
-                autoComplete='new-password'
-                defaultCountry='PT'
+                type="tel"
+                autoComplete="new-password"
+                defaultCountry="PT"
                 countries={[
                   'PT', // Portugal
                   'ES', // Spain
@@ -152,7 +152,7 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
       <FormField
         control={form.control}
-        name='nif'
+        name="nif"
         render={({ field }) => (
           <FormItem>
             <FormLabel>
@@ -175,20 +175,20 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
       {/* Delivery Address Section - Only shown for delivery orders */}
       {isDelivery && (
         <>
-          <h2 className='scroll-m-20 text-2xl font-semibold tracking-tight'>
+          <h2 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             Morada de Entrega
           </h2>
 
           <FormField
             control={form.control}
-            name='address1'
+            name="address1"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Linha de morada 1</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Nome e número da rua'
-                    autoComplete='new-password'
+                    placeholder="Nome e número da rua"
+                    autoComplete="new-password"
                     {...field}
                     onKeyDown={handleEnterKey}
                     onBlur={(e) => {
@@ -206,14 +206,14 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
           <FormField
             control={form.control}
-            name='address2'
+            name="address2"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Linha de morada 2</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Apartamento, bloco, edificio, andar, etc.'
-                    autoComplete='new-password'
+                    placeholder="Apartamento, bloco, edificio, andar, etc."
+                    autoComplete="new-password"
                     {...field}
                     onKeyDown={handleEnterKey}
                   />
@@ -223,11 +223,11 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
             )}
           />
 
-          <div className='flex gap-14'>
+          <div className="flex gap-14">
             <div>
               <FormField
                 control={form.control}
-                name='postalCode'
+                name="postalCode"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Código Postal</FormLabel>
@@ -264,16 +264,16 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
                 )}
               />
             </div>
-            <div className='flex-grow'>
+            <div className="flex-grow">
               <FormField
                 control={form.control}
-                name='city'
+                name="city"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Cidade</FormLabel>
                     <FormControl>
                       <Input
-                        autoComplete='new-password'
+                        autoComplete="new-password"
                         {...field}
                         onKeyDown={handleEnterKey}
                         onBlur={(e) => {
@@ -294,16 +294,16 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
           <FormField
             control={form.control}
-            name='elevator'
+            name="elevator"
             render={({ field }) => (
-              <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <div className='space-y-1 leading-none'>
+                <div className="space-y-1 leading-none">
                   <FormLabel>Há elevador</FormLabel>
                   <FormDescription>
                     Se o elevador não estiver operacional, por favor deixe a
@@ -320,9 +320,9 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
       {isDelivery && (
         <FormField
           control={form.control}
-          name='sameAddress'
+          name="sameAddress"
           render={({ field }) => (
-            <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
               <FormControl>
                 <Checkbox
                   checked={field.value}
@@ -339,7 +339,7 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
                   }}
                 />
               </FormControl>
-              <div className='space-y-1 leading-none'>
+              <div className="space-y-1 leading-none">
                 <FormLabel>
                   A morada de faturação é a mesma que a morada de entrega
                 </FormLabel>
@@ -351,21 +351,21 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
       {/* Optional Billing Address - Shown for direct sales or when sameAddress is false */}
       {(!isDelivery || !sameAddress) && (
-        <div className='space-y-8 animate-slide-fade'>
-          <h3 className='scroll-m-20 text-2xl font-semibold tracking-tight'>
+        <div className="space-y-8 animate-slide-fade">
+          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
             Morada de Faturação{!isDelivery && ' (opcional)'}
           </h3>
 
           <FormField
             control={form.control}
-            name='billingAddress1'
+            name="billingAddress1"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Linha de morada 1</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Nome e número da rua'
-                    autoComplete='new-password'
+                    placeholder="Nome e número da rua"
+                    autoComplete="new-password"
                     {...field}
                     onKeyDown={handleEnterKey}
                     onBlur={(e) => {
@@ -383,14 +383,14 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
           <FormField
             control={form.control}
-            name='billingAddress2'
+            name="billingAddress2"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Linha de morada 2</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='Apartamento, bloco, edificio, andar, etc.'
-                    autoComplete='new-password'
+                    placeholder="Apartamento, bloco, edificio, andar, etc."
+                    autoComplete="new-password"
                     {...field}
                     onKeyDown={handleEnterKey}
                   />
@@ -400,10 +400,10 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
             )}
           />
 
-          <div className='flex gap-14'>
+          <div className="flex gap-14">
             <FormField
               control={form.control}
-              name='billingPostalCode'
+              name="billingPostalCode"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Código Postal</FormLabel>
@@ -442,14 +442,14 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
 
             <FormField
               control={form.control}
-              name='billingCity'
+              name="billingCity"
               render={({ field }) => (
-                <FormItem className='flex-grow'>
+                <FormItem className="flex-grow">
                   <FormLabel>Cidade</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      autoComplete='new-password'
+                      autoComplete="new-password"
                       onKeyDown={handleEnterKey}
                       onBlur={(e) => {
                         const formattedValue = capitalizeWithPreserve(

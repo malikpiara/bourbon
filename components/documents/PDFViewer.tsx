@@ -206,19 +206,19 @@ const PDFViewer = ({ url, className }: PDFViewerProps) => {
 
   // Common loading state component for reuse
   const LoadingState = () => (
-    <div className='flex justify-center items-center h-64 bg-neutral-100 rounded-lg'>
-      <p className='text-neutral-500'>A carregar PDF...</p>
+    <div className="flex justify-center items-center h-64 bg-neutral-100 rounded-lg">
+      <p className="text-neutral-500">A carregar PDF...</p>
     </div>
   );
 
   // If we detect that the browser doesn't support necessary features
   if (initializationError) {
     return (
-      <div className='flex flex-col justify-center items-center h-64 bg-neutral-100 rounded-lg'>
-        <p className='text-neutral-500'>
+      <div className="flex flex-col justify-center items-center h-64 bg-neutral-100 rounded-lg">
+        <p className="text-neutral-500">
           A visualização do PDF não está disponível no momento.
         </p>
-        <p className='text-sm text-neutral-400 mt-2'>
+        <p className="text-sm text-neutral-400 mt-2">
           Por favor, utilize o botão de download para ver o documento.
         </p>
       </div>
@@ -227,38 +227,38 @@ const PDFViewer = ({ url, className }: PDFViewerProps) => {
 
   if (!url) {
     return (
-      <div className='flex justify-center items-center h-64 bg-neutral-100 rounded-lg'>
-        <p className='text-neutral-500'>Nenhum PDF para visualizar</p>
+      <div className="flex justify-center items-center h-64 bg-neutral-100 rounded-lg">
+        <p className="text-neutral-500">Nenhum PDF para visualizar</p>
       </div>
     );
   }
 
   return (
     <div className={`flex flex-col ${className || ''}`}>
-      <div className='flex-grow mb-16'>
+      <div className="flex-grow mb-16">
         <Document
           file={url}
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={onDocumentLoadError}
           loading={<LoadingState />}
           error={
-            <div className='flex flex-col justify-center items-center h-64 bg-neutral-100 rounded-lg'>
-              <p className='text-neutral-500'>
+            <div className="flex flex-col justify-center items-center h-64 bg-neutral-100 rounded-lg">
+              <p className="text-neutral-500">
                 Não foi possível carregar o PDF.
               </p>
-              <p className='text-sm text-neutral-400 mt-2'>
+              <p className="text-sm text-neutral-400 mt-2">
                 Por favor, utilize o botão de download para ver o documento.
               </p>
             </div>
           }
         >
           {!error && !loading && (
-            <div key={key} className='animate-slide-fade'>
+            <div key={key} className="animate-slide-fade">
               <Page
                 pageNumber={pageNumber}
                 renderTextLayer={true}
                 renderAnnotationLayer={true}
-                className='rounded-lg overflow-hidden'
+                className="rounded-lg overflow-hidden"
                 width={700}
               />
             </div>
@@ -270,25 +270,25 @@ const PDFViewer = ({ url, className }: PDFViewerProps) => {
 
       {/* Only show controls if everything loaded successfully */}
       {!loading && !error && numPages > 1 && (
-        <div className='fixed bottom-8 right-5 flex items-center gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-full shadow-lg z-10'>
+        <div className="fixed bottom-8 right-5 flex items-center gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-full shadow-lg z-10">
           <Button
             onClick={() => handlePageChange(Math.max(1, pageNumber - 1))}
             disabled={pageNumber <= 1}
-            variant='outline'
-            size='sm'
+            variant="outline"
+            size="sm"
           >
             Anterior
           </Button>
 
-          <p className='text-sm font-medium px-2'>
+          <p className="text-sm font-medium px-2">
             Página {pageNumber} de {numPages}
           </p>
 
           <Button
             onClick={() => handlePageChange(Math.min(numPages, pageNumber + 1))}
             disabled={pageNumber >= numPages}
-            variant='outline'
-            size='sm'
+            variant="outline"
+            size="sm"
           >
             Seguinte
           </Button>
@@ -316,7 +316,7 @@ const SelectionTooltip = ({
 
   return (
     <div
-      className='selection-tooltip fixed z-50 bg-white rounded-lg shadow-lg px-3 py-2 transform -translate-x-1/2'
+      className="selection-tooltip fixed z-50 bg-white rounded-lg shadow-lg px-3 py-2 transform -translate-x-1/2"
       style={{
         top: `${position.y - 45}px`,
         left: `${position.x}px`,
@@ -324,7 +324,7 @@ const SelectionTooltip = ({
     >
       <button
         onClick={handleClick}
-        className='flex items-center gap-2 text-sm text-neutral-700 hover:text-neutral-900'
+        className="flex items-center gap-2 text-sm text-neutral-700 hover:text-neutral-900"
       >
         <Copy size={14} />
         <span>Copiar</span>

@@ -16,8 +16,8 @@ export const PdfDownloadButton = () => {
         return (
           <a
             href={url || ''}
-            download='encomenda.pdf'
-            className='download-button'
+            download="encomenda.pdf"
+            className="download-button"
           >
             <button>Download PDF</button>
           </a>

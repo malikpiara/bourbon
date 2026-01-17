@@ -50,10 +50,10 @@ export default function ProductRow({
     <TableRow
       key={field.id}
       data-row-id={field.id}
-      className='group table-row-enter'
+      className="group table-row-enter"
     >
       {/* Reference Field */}
-      <TableCell className='p-2'>
+      <TableCell className="p-2">
         <Controller
           name={`tableEntries.${index}.ref` as const}
           control={form.control}
@@ -61,7 +61,7 @@ export default function ProductRow({
           render={({ field: inputField, fieldState: { error } }) => (
             <InputWithError
               {...inputField}
-              placeholder='Referência'
+              placeholder="Referência"
               error={error?.message}
               onBlur={(e) => {
                 const cleanValue = cleanSpaces(e.target.value);
@@ -75,7 +75,7 @@ export default function ProductRow({
       </TableCell>
 
       {/* Quantity Field with Select Component */}
-      <TableCell className='p-2'>
+      <TableCell className="p-2">
         <Controller
           name={`tableEntries.${index}.quantity` as const}
           control={form.control}
@@ -89,8 +89,8 @@ export default function ProductRow({
                 onValueChange={(value) => inputField.onChange(Number(value))}
                 defaultValue={inputField.value.toString()}
               >
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Quantidade' />
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Quantidade" />
                 </SelectTrigger>
                 <SelectContent>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -101,7 +101,7 @@ export default function ProductRow({
                 </SelectContent>
               </Select>
               {error && (
-                <p className='text-xs text-red-700 mt-1'>{error.message}</p>
+                <p className="text-xs text-red-700 mt-1">{error.message}</p>
               )}
             </div>
           )}
@@ -109,7 +109,7 @@ export default function ProductRow({
       </TableCell>
 
       {/* Description Field */}
-      <TableCell className='p-2'>
+      <TableCell className="p-2">
         <Controller
           name={`tableEntries.${index}.description` as const}
           control={form.control}
@@ -117,7 +117,7 @@ export default function ProductRow({
           render={({ field: inputField, fieldState: { error } }) => (
             <InputWithError
               {...inputField}
-              placeholder='Designação'
+              placeholder="Designação"
               error={error?.message}
               onBlur={(e) => {
                 const cleanValue = cleanSpaces(e.target.value);
@@ -131,7 +131,7 @@ export default function ProductRow({
       </TableCell>
 
       {/* Unit Price Field with Special Handling */}
-      <TableCell className='p-2'>
+      <TableCell className="p-2">
         <Controller
           name={`tableEntries.${index}.unitPrice` as const}
           control={form.control}
@@ -142,8 +142,8 @@ export default function ProductRow({
           render={({ field: inputField, fieldState: { error } }) => (
             <InputWithError
               {...inputField}
-              type='text'
-              placeholder='Preço'
+              type="text"
+              placeholder="Preço"
               value={inputField.value || ''}
               error={error?.message}
               onChange={(e) => {
@@ -164,16 +164,16 @@ export default function ProductRow({
       </TableCell>
 
       {/* Delete Button with Confirmation Dialog */}
-      <TableCell className='p-2'>
+      <TableCell className="p-2">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              type='button'
-              variant='outline'
-              size='sm'
-              className='group-hover:opacity-80 transition-opacity text-muted-foreground font-medium'
+              type="button"
+              variant="outline"
+              size="sm"
+              className="group-hover:opacity-80 transition-opacity text-muted-foreground font-medium"
             >
-              <Trash2 className='h-4 w-4 mr-2' />
+              <Trash2 className="h-4 w-4 mr-2" />
               Apagar
             </Button>
           </AlertDialogTrigger>

@@ -79,24 +79,24 @@ export function ProductTable({ form }: ProductTableProps) {
   }
 
   return (
-    <div className='space-y-4 table-row-enter'>
-      <div className='overflow-x-auto'>
-        <Table className='w-full'>
+    <div className="space-y-4 table-row-enter">
+      <div className="overflow-x-auto">
+        <Table className="w-full">
           <TableHeader>
             <TableRow>
-              <TableHead className='w-[200px] text-neutral-800'>
+              <TableHead className="w-[200px] text-neutral-800">
                 Referência
               </TableHead>
-              <TableHead className='w-[100px] text-neutral-800'>
+              <TableHead className="w-[100px] text-neutral-800">
                 Quantidade
               </TableHead>
-              <TableHead className='min-w-[200px] text-neutral-800'>
+              <TableHead className="min-w-[200px] text-neutral-800">
                 Designação
               </TableHead>
-              <TableHead className='w-[200px] text-neutral-800'>
+              <TableHead className="w-[200px] text-neutral-800">
                 Preço Unitário
               </TableHead>
-              <TableHead className='w-[150px] text-neutral-800'>
+              <TableHead className="w-[150px] text-neutral-800">
                 Ações
               </TableHead>
             </TableRow>
@@ -111,11 +111,11 @@ export function ProductTable({ form }: ProductTableProps) {
                 handleRemove={handleRemove}
               />
             ))}
-            <TableRow className='font-semibold'>
-              <TableCell colSpan={1} className='text-right'>
+            <TableRow className="font-semibold">
+              <TableCell colSpan={1} className="text-right">
                 Total:
               </TableCell>
-              <TableCell className='text-left'>{totalQuantity}</TableCell>
+              <TableCell className="text-left">{totalQuantity}</TableCell>
               <TableCell></TableCell>
               <TableCell>{formatCurrency(totalPrice)}</TableCell>
               <TableCell></TableCell>
@@ -124,11 +124,11 @@ export function ProductTable({ form }: ProductTableProps) {
         </Table>
       </div>
       <Button
-        type='button'
+        type="button"
         onClick={handleAppend}
-        className='flex items-center gap-2'
+        className="flex items-center gap-2"
       >
-        <PlusCircle className='h-4 w-4' />
+        <PlusCircle className="h-4 w-4" />
         Adicionar Produto
       </Button>
     </div>

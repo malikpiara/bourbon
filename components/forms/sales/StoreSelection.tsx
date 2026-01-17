@@ -48,15 +48,15 @@ export const StoreSelection = ({
   form,
   onStoreSelect,
 }: StoreSelectionProps) => (
-  <div className='space-y-8'>
-    <h2 className='scroll-m-20 text-4xl font-semibold tracking-tight'>
+  <div className="space-y-8">
+    <h2 className="scroll-m-20 text-4xl font-semibold tracking-tight">
       Selecione a Loja
     </h2>
     <FormField
       control={form.control}
-      name='storeId'
+      name="storeId"
       render={({ field }) => (
-        <FormItem className='space-y-3 animate-slide-fade'>
+        <FormItem className="space-y-3 animate-slide-fade">
           {/* <FormLabel>Loja</FormLabel> */}
           <FormControl>
             <RadioGroup
@@ -65,22 +65,22 @@ export const StoreSelection = ({
                 onStoreSelect(value);
               }}
               defaultValue={field.value}
-              className='grid grid-cols-1 sm:grid-cols-3 gap-4'
+              className="grid grid-cols-1 sm:grid-cols-3 gap-4"
             >
               {stores.map((store) => (
                 <label
                   key={store.id}
                   htmlFor={`store-${store.id}`}
-                  className='flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer'
+                  className="flex flex-col items-center justify-between rounded-lg border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
                 >
                   <RadioGroupItem
                     value={store.id}
-                    className='peer sr-only'
+                    className="peer sr-only"
                     id={`store-${store.id}`}
                   />
-                  <Store className='mb-3 h-6 w-6' />
-                  <h3 className='text-lg font-medium'>{store.name}</h3>
-                  <p className='text-sm text-muted-foreground'>
+                  <Store className="mb-3 h-6 w-6" />
+                  <h3 className="text-lg font-medium">{store.name}</h3>
+                  <p className="text-sm text-muted-foreground">
                     {store.description}
                   </p>
                 </label>

@@ -136,13 +136,13 @@ export function SalesForm() {
 
   return (
     <FormProvider {...form}>
-      <div className='space-y-8'>
+      <div className="space-y-8">
         {process.env.NODE_ENV === 'development' && (
           <Button
-            type='button'
+            type="button"
             onClick={handleFillTestData}
-            variant='outline'
-            className='mb-4'
+            variant="outline"
+            className="mb-4"
           >
             Fill Test Data
           </Button>
@@ -171,7 +171,7 @@ export function SalesForm() {
                   handlePreviewGeneration(values);
                 }
               })}
-              className='space-y-8'
+              className="space-y-8"
             >
               <OrderMetadata
                 form={form}
@@ -184,7 +184,7 @@ export function SalesForm() {
               <CustomerSection form={form} />
 
               <Button
-                type='submit'
+                type="submit"
                 size={'lg'}
                 disabled={
                   !form.formState.isValid ||
@@ -209,20 +209,20 @@ export function SalesForm() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handlePreviewGeneration)}
-                className='space-y-8'
+                className="space-y-8"
               >
                 <PaymentSection form={form} />
 
-                <div className='flex justify-between'>
+                <div className="flex justify-between">
                   <Button
-                    type='button'
-                    variant='outline'
+                    type="button"
+                    variant="outline"
                     size={'lg'}
                     onClick={() => setCurrentStep('details')}
                   >
                     Voltar
                   </Button>
-                  <Button type='submit' size={'lg'}>
+                  <Button type="submit" size={'lg'}>
                     Pré-visualizar Documento
                   </Button>
                 </div>

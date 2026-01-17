@@ -44,11 +44,11 @@ export function OrderMetadata({
       <Collapsible
         open={isOpen}
         onOpenChange={onOpenChange}
-        className='w-full space-y-2 bg-[#F6F3F0] rounded-lg collapsible-transition'
+        className="w-full space-y-2 bg-[#F6F3F0] rounded-lg collapsible-transition"
       >
         <CollapsibleTrigger asChild>
-          <div className='flex w-full items-center justify-between space-x-4 px-8 py-6 cursor-pointer rounded-lg transition-colors bg-[#F6F3F0]'>
-            <div className='flex items-center space-x-2'>
+          <div className="flex w-full items-center justify-between space-x-4 px-8 py-6 cursor-pointer rounded-lg transition-colors bg-[#F6F3F0]">
+            <div className="flex items-center space-x-2">
               <ChevronDown
                 className={`h-4 w-4 transition-transform duration-200 ${
                   isOpen ? 'rotate-180' : ''
@@ -59,17 +59,17 @@ export function OrderMetadata({
           </div>
         </CollapsibleTrigger>
 
-        <CollapsibleContent className='space-y-4 px-8 pb-6 collapsible-content-transition'>
+        <CollapsibleContent className="space-y-4 px-8 pb-6 collapsible-content-transition">
           <FormField
             control={form.control}
-            name='orderNumber'
+            name="orderNumber"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Número da Encomenda</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder='6111'
-                    autoComplete='false'
+                    placeholder="6111"
+                    autoComplete="false"
                     {...field}
                     onKeyDown={handleEnterKey}
                   />
@@ -84,15 +84,15 @@ export function OrderMetadata({
 
           <FormField
             control={form.control}
-            name='date'
+            name="date"
             render={({ field }) => (
-              <FormItem className='flex flex-col'>
+              <FormItem className="flex flex-col">
                 <FormLabel>Data da encomenda</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant='outline'
+                        variant="outline"
                         className={cn(
                           'w-[340px] pl-3 text-left font-normal',
                           !field.value && 'text-muted-foreground'
@@ -103,13 +103,13 @@ export function OrderMetadata({
                         ) : (
                           <span>Escolha uma data</span>
                         )}
-                        <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className='w-auto p-0' align='start'>
+                  <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
-                      mode='single'
+                      mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={(date) =>

@@ -10,12 +10,12 @@ export const DirectSalesDocument: React.FC<DocumentData> = ({
 }) => {
   return (
     <Document>
-      <Page size='A4' style={styles.page} wrap>
+      <Page size="A4" style={styles.page} wrap>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             {/* eslint-disable-next-line jsx-a11y/alt-text */}
-            <Image style={styles.logo} src='/logo.png' />
+            <Image style={styles.logo} src="/logo.png" />
           </View>
           <View style={styles.headerRight}>
             <Text style={styles.invoiceTitle}>Venda Direta</Text>
