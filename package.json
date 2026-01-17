@@ -39,7 +39,7 @@
     "date-fns": "^4.1.0",
     "input-otp": "^1.4.1",
     "lucide-react": "^0.468.0",
-    "next": "15.1.0",
+    "next": "15.1.11",
     "pdfjs-dist": "4.8.69",
     "posthog-js": "^1.215.6",
     "react": "^19.0.0",
