@@ -48,7 +48,7 @@ export interface Order {
   notes?: string;
   firstPayment?: number;
   secondPayment?: number;
-  paymentType?: 'mbway' | 'cash' | 'card' | 'transfer';
+  paymentType?: 'mbway' | 'cash' | 'card' | 'transfer' | 'cheque';
   payments?: PaymentInfo[];
 }
 

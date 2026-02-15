@@ -17,17 +17,11 @@ import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import { PAYMENT_TYPES } from '@/lib/constants';
 
 interface PaymentSectionProps {
   form: UseFormReturn<FormValues>;
 }
-
-const PAYMENT_TYPES = [
-  { value: 'mbway', label: 'MBWay' },
-  { value: 'cash', label: 'Numerário' },
-  { value: 'card', label: 'Multibanco' },
-  { value: 'transfer', label: 'Transferência' },
-] as const;
 
 export function PaymentSection({ form }: PaymentSectionProps) {
   const fields = form.watch('tableEntries');

@@ -1,8 +1,14 @@
 import { isPossiblePhoneNumber } from 'react-phone-number-input';
 import { z } from 'zod';
 
-// Payment type schema
-const paymentTypeSchema = z.enum(['mbway', 'cash', 'card', 'transfer']);
+// Payment type schema. If you change this, you need to change the value in document.ts
+const paymentTypeSchema = z.enum([
+  'mbway',
+  'cash',
+  'card',
+  'transfer',
+  'cheque',
+]);
 
 // Table Entries Schema
 export const tableEntrySchema = z.object({
@@ -10,7 +16,7 @@ export const tableEntrySchema = z.object({
   ref: z.string().min(3, 'A referência deve ter pelo menos 3 caracteres.'),
   description: z
     .string()
-    .min(5, 'O nome do produto deve ter pelo menos 5 caracteres.'),
+    .min(4, 'O nome do produto deve ter pelo menos 4 caracteres.'),
   quantity: z.number().min(1, 'A quantidade deve ser pelo menos 1.'),
   unitPrice: z
     .union([
