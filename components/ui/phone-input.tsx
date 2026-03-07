@@ -21,6 +21,18 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/utils/tailwind';
 
+// Safe wrapper around getCountryCallingCode. The library throws when it receives
+// an invalid or undefined country (e.g. when a user manually types "+" before
+// digits that form an unrecognised country code). Instead of crashing the whole
+// app during render, we return a fallback.
+function safeGetCallingCode(country: RPNInput.Country): string {
+  try {
+    return RPNInput.getCountryCallingCode(country);
+  } catch {
+    return '?';
+  }
+}
+
 type PhoneInputProps = Omit<
   React.ComponentProps<'input'>,
   'onChange' | 'value' | 'ref'
@@ -39,7 +51,6 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
           flagComponent={FlagComponent}
           countrySelectComponent={CountrySelect}
           inputComponent={InputComponent}
-          smartCaret={false}
           /**
            * Handles the onChange event.
            *
@@ -49,7 +60,13 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
            *
            * @param {E164Number | undefined} value - The entered value
            */
-          onChange={(value) => onChange?.(value || ('' as RPNInput.Value))}
+          onChange={(value) => {
+            try {
+              onChange?.(value || ('' as RPNInput.Value));
+            } catch {
+              onChange?.('' as RPNInput.Value);
+            }
+          }}
           {...props}
         />
       );
@@ -98,7 +115,7 @@ const CountrySelect = ({
             countryName={selectedCountry}
           />
           <span className="text-sm">
-            +{RPNInput.getCountryCallingCode(selectedCountry)}
+            +{safeGetCallingCode(selectedCountry)}
           </span>
           <ChevronsUpDown
             className={cn(
@@ -150,7 +167,7 @@ const CountrySelectOption = ({
     <CommandItem className="gap-2" onSelect={() => onChange(country)}>
       <FlagComponent country={country} countryName={countryName} />
       <span className="flex-1 text-sm">{countryName}</span>
-      <span className="text-sm text-foreground/50">{`+${RPNInput.getCountryCallingCode(
+      <span className="text-sm text-foreground/50">{`+${safeGetCallingCode(
         country
       )}`}</span>
       <CheckIcon

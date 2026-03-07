@@ -6,7 +6,7 @@ import { Form } from '@/components/ui/form';
 import { formSchema, FormValues } from '@/lib/schema';
 import { useCallback, useState } from 'react';
 import { DocumentData } from '@/types/document';
-import { DEFAULT_ORDER_NUMBER } from '@/lib/constants';
+import { DEFAULT_ORDER_NUMBER, STORES } from '@/lib/constants';
 import { downloadPdf } from '@/utils/form';
 import { formatOrderData } from '@/utils/format';
 import { StoreSelection } from './StoreSelection';
@@ -15,7 +15,6 @@ import ProductSection from './ProductSection';
 import { OrderMetadata } from './OrderMetadata';
 import { fillFormWithTestData } from '@/lib/mocks/testData';
 import { SalesTypeSelection } from './SalesTypeSelection';
-import { stores } from './StoreSelection';
 import { PreviewStep } from './PreviewStep';
 import { PaymentSection } from './PaymentSection';
 
@@ -60,7 +59,7 @@ export function SalesForm() {
   });
 
   const handleStoreSelect = (storeId: string) => {
-    const selectedStore = stores.find((store) => store.id === storeId);
+    const selectedStore = STORES.find((store) => store.id === storeId);
     form.setValue('storeId', storeId);
 
     if (selectedStore?.salesTypes.length === 1) {

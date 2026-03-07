@@ -1,3 +1,4 @@
+// Store selection step — first step of the sales form.
 'use client';
 
 import { UseFormReturn } from 'react-hook-form';
@@ -10,39 +11,12 @@ import {
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Store } from 'lucide-react';
+import { STORES } from '@/lib/constants';
 
 interface StoreSelectionProps {
   form: UseFormReturn<FormValues>;
   onStoreSelect: (value: string) => void;
 }
-
-type Store = {
-  id: string;
-  name: string;
-  description: string;
-  salesTypes: ('delivery' | 'direct')[];
-};
-
-export const stores: Store[] = [
-  {
-    id: '1',
-    name: 'Clássica',
-    description: 'A loja original com produtos tradicionais.',
-    salesTypes: ['delivery'],
-  },
-  {
-    id: '3',
-    name: 'Moderna',
-    description: 'Uma loja com designs contemporâneos.',
-    salesTypes: ['delivery'],
-  },
-  {
-    id: '6',
-    name: 'Iluminação',
-    description: 'Especializada em iluminação de qualidade.',
-    salesTypes: ['delivery', 'direct'],
-  },
-];
 
 export const StoreSelection = ({
   form,
@@ -67,7 +41,7 @@ export const StoreSelection = ({
               defaultValue={field.value}
               className="grid grid-cols-1 sm:grid-cols-3 gap-4"
             >
-              {stores.map((store) => (
+              {STORES.map((store) => (
                 <label
                   key={store.id}
                   htmlFor={`store-${store.id}`}

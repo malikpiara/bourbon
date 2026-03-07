@@ -1,18 +1,16 @@
+// Formats a phone number for display in PDF documents.
+// Expects E.164 format (e.g. "+351962119084") and adds a space after the country code.
+// Returns the input as-is if it's not in E.164 format.
 export const formatPhoneNumber = (phone: string | null): string => {
-  if (!phone) return ''; // Handle null or empty phone number
+  if (!phone) return '';
 
   if (phone.startsWith('+')) {
-    // Extract country code and the rest of the number
-    const countryCodeMatch = phone.match(/^\+(\d+)/); // Match "+<digits>"
+    const countryCodeMatch = phone.match(/^\+(\d+)/);
     const countryCode = countryCodeMatch ? countryCodeMatch[1] : '';
-    const restOfNumber = phone.slice(countryCode.length + 1); // Correct slicing
-
-    // Ensure that `restOfNumber` is actually extracted
-    console.log('Country Code:', countryCode);
-    console.log('Rest of Number:', restOfNumber);
+    const restOfNumber = phone.slice(countryCode.length + 1);
 
     return `+${countryCode} ${restOfNumber}`.trim();
   }
 
-  return phone; // Return as-is if not in E.164 format
+  return phone;
 };
