@@ -150,3 +150,4 @@ export const formSchema = z.discriminatedUnion('salesType', [
 
 export type TableEntry = z.infer<typeof tableEntrySchema>;
 export type FormValues = z.infer<typeof formSchema>;
+export type DeliveryFormValues = z.infer<typeof deliverySchema>;

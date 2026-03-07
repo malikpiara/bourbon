@@ -1,7 +1,9 @@
+// Payment section for delivery orders: payment type selector, split slider,
+// and first/second payment amounts. Only rendered when salesType === 'delivery'.
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UseFormReturn } from 'react-hook-form';
-import { FormValues } from '@/lib/schema';
+import { FormValues, DeliveryFormValues } from '@/lib/schema';
 import { formatCurrency } from '@/utils/format/currency';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,7 +25,10 @@ interface PaymentSectionProps {
   form: UseFormReturn<FormValues>;
 }
 
-export function PaymentSection({ form }: PaymentSectionProps) {
+export function PaymentSection({ form: untypedForm }: PaymentSectionProps) {
+  // PaymentSection only renders when salesType === 'delivery' (guarded in index.tsx).
+  // Narrow the form type so delivery-only fields (paymentType, payments) are type-safe.
+  const form = untypedForm as unknown as UseFormReturn<DeliveryFormValues>;
   const fields = form.watch('tableEntries');
   const orderDate = form.watch('date');
 
@@ -139,12 +144,8 @@ export function PaymentSection({ form }: PaymentSectionProps) {
               />
             </div>
             <Select
-              // @ts-expect-error: Temporary suppression of TypeScript error due to discriminated union type mismatch.
-              value={form.watch('paymentType') as FormValues['paymentType']}
-              // @ts-expect-error: Temporary suppression of TypeScript error. Will refactor to properly handle type narrowing.
-              onValueChange={(value: FormValues['paymentType']) =>
-                form.setValue('paymentType', value)
-              }
+              value={form.watch('paymentType')}
+              onValueChange={(value) => form.setValue('paymentType', value)}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Selecione o Método de Pagamento" />
