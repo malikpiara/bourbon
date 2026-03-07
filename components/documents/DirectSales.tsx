@@ -1,3 +1,5 @@
+// PDF document for direct sales (vendas diretas). Simpler layout than delivery
+// orders — no address, payment table, or signature sections.
 import React from 'react';
 import { Page, Text, View, Document, Image } from '@react-pdf/renderer';
 import { DocumentData } from '@/types/document';
@@ -48,27 +50,19 @@ export const DirectSalesDocument: React.FC<DocumentData> = ({
         </View>
 
         {/* Table Rows */}
-        {order.items.map((item, index) => {
-          // Narrow the type just like in the first component
-          const unitPrice =
-            typeof item.unitPrice === 'string'
-              ? parseFloat(item.unitPrice.replace(',', '.'))
-              : item.unitPrice;
-
-          const itemTotal = (item.quantity * unitPrice).toFixed(2);
-
-          return (
-            <View key={index} style={styles.tableRow}>
-              <Text style={styles.refColumn}>{item.ref}</Text>
-              <Text style={styles.descriptionColumn}>{item.description}</Text>
-              <Text style={styles.quantityColumn}>{item.quantity}</Text>
-              <Text style={styles.unitPriceColumn}>
-                €{unitPrice.toFixed(2)}
-              </Text>
-              <Text style={styles.totalColumn}>€{itemTotal}</Text>
-            </View>
-          );
-        })}
+        {order.items.map((item, index) => (
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.refColumn}>{item.ref}</Text>
+            <Text style={styles.descriptionColumn}>{item.description}</Text>
+            <Text style={styles.quantityColumn}>{item.quantity}</Text>
+            <Text style={styles.unitPriceColumn}>
+              €{item.unitPrice.toFixed(2)}
+            </Text>
+            <Text style={styles.totalColumn}>
+              €{(item.quantity * item.unitPrice).toFixed(2)}
+            </Text>
+          </View>
+        ))}
 
         {/* Total Section */}
         <View style={styles.totalSection}>

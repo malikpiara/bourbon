@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { UseFormReturn } from 'react-hook-form';
 import { FormValues, DeliveryFormValues } from '@/lib/schema';
 import { formatCurrency } from '@/utils/format/currency';
+import { computeTotal } from '@/utils/format/total';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
@@ -32,21 +33,7 @@ export function PaymentSection({ form: untypedForm }: PaymentSectionProps) {
   const fields = form.watch('tableEntries');
   const orderDate = form.watch('date');
 
-  // First, let's create a type helper for the pre-transformation unitPrice
-  type UnitPrice = string | number;
-
-  // Calculate total with proper type annotations
-  const total = fields.reduce((sum, field) => {
-    const quantity = field.quantity || 0;
-    const rawPrice = field.unitPrice as UnitPrice; // Help TypeScript understand the type
-
-    const numericPrice =
-      typeof rawPrice === 'string'
-        ? parseFloat(rawPrice.replace(',', '.')) || 0
-        : rawPrice || 0;
-
-    return sum + quantity * numericPrice;
-  }, 0);
+  const total = computeTotal(fields);
 
   const [sliderValue, setSliderValue] = useState(50);
 

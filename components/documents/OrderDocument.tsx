@@ -1,7 +1,10 @@
+// PDF document for delivery orders (encomendas). Renders header, customer info,
+// product table, totals, delivery address, notes, payment table, and signatures.
 import React from 'react';
 import { Page, Text, View, Document, Image } from '@react-pdf/renderer';
 import { DocumentData } from '@/types/document';
 import { styles } from './documentStyles';
+import { computeTotal } from '@/utils/format/total';
 
 // Create Document Component
 export const OrderDocument: React.FC<DocumentData> = ({
@@ -69,55 +72,35 @@ export const OrderDocument: React.FC<DocumentData> = ({
         </View>
 
         {/* Table Rows */}
-        {order.items.map((item, index) => {
-          const unitPrice =
-            typeof item.unitPrice === 'string'
-              ? parseFloat(item.unitPrice.replace(',', '.'))
-              : item.unitPrice;
-
-          const calculatedTotal = (item.quantity * unitPrice).toFixed(2);
-
-          return (
-            <View key={index} style={styles.tableRow}>
-              <Text style={styles.refColumn}>{item.ref}</Text>
-              <Text style={styles.descriptionColumn}>{item.description}</Text>
-              <Text style={styles.quantityColumn}>{item.quantity}</Text>
-              <Text style={styles.unitPriceColumn}>
-                €{unitPrice.toFixed(2)}
-              </Text>
-              <Text style={styles.totalColumn}>€{calculatedTotal}</Text>
-            </View>
-          );
-        })}
+        {order.items.map((item, index) => (
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.refColumn}>{item.ref}</Text>
+            <Text style={styles.descriptionColumn}>{item.description}</Text>
+            <Text style={styles.quantityColumn}>{item.quantity}</Text>
+            <Text style={styles.unitPriceColumn}>
+              €{item.unitPrice.toFixed(2)}
+            </Text>
+            <Text style={styles.totalColumn}>
+              €{(item.quantity * item.unitPrice).toFixed(2)}
+            </Text>
+          </View>
+        ))}
 
         {/* Total Amount */}
-        {(() => {
-          const calculatedTotalAmount = order.items.reduce((sum, item) => {
-            const unitPrice =
-              typeof item.unitPrice === 'string'
-                ? parseFloat(item.unitPrice.replace(',', '.'))
-                : item.unitPrice;
-
-            return sum + item.quantity * unitPrice;
-          }, 0);
-
-          return (
-            <View style={styles.totalSection}>
-              <View style={styles.totalRow}>
-                <Text style={styles.vatText}>
-                  IVA incluido à taxa em vigor ({order.vat})
-                </Text>
-                <View style={styles.quantityColumn} />
-                <Text style={[styles.unitPriceColumn, { fontWeight: 700 }]}>
-                  Total:
-                </Text>
-                <Text style={[styles.totalColumn, { fontWeight: 700 }]}>
-                  €{calculatedTotalAmount.toFixed(2)}
-                </Text>
-              </View>
-            </View>
-          );
-        })()}
+        <View style={styles.totalSection}>
+          <View style={styles.totalRow}>
+            <Text style={styles.vatText}>
+              IVA incluido à taxa em vigor ({order.vat})
+            </Text>
+            <View style={styles.quantityColumn} />
+            <Text style={[styles.unitPriceColumn, { fontWeight: 700 }]}>
+              Total:
+            </Text>
+            <Text style={[styles.totalColumn, { fontWeight: 700 }]}>
+              €{computeTotal(order.items).toFixed(2)}
+            </Text>
+          </View>
+        </View>
 
         {/* "Os seus dados" Section */}
         <View style={styles.transferDetails}>

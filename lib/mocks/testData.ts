@@ -36,10 +36,7 @@ export const testFormValues: FormValues = {
     ref: item.ref,
     description: item.description,
     quantity: item.quantity,
-    unitPrice:
-      typeof item.unitPrice === 'string'
-        ? parseFloat(item.unitPrice.replace(',', '.'))
-        : item.unitPrice,
+    unitPrice: item.unitPrice,
   })),
 };
 
