@@ -47,7 +47,10 @@ interface SelectionPosition {
   text: string;
 }
 
-// Try to set up the polyfill, but wrap it in a try-catch in case something goes wrong
+// Defensive Promise.withResolvers polyfill for PDF initialization.
+// The canonical polyfill lives in polyfills.ts (loaded via webpack entry in next.config.ts),
+// but we keep this copy as a safety net inside try-catch because PDF rendering has
+// historically broken in older browsers when this polyfill is missing.
 try {
   if (typeof window !== 'undefined' && !Promise.withResolvers) {
     Promise.withResolvers = function <T>() {

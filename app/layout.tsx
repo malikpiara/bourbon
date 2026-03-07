@@ -3,22 +3,7 @@ import { CSPostHogProvider } from './providers';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
-// Add polyfill to try and handle problems with browser compatibility.
-if (typeof window !== 'undefined') {
-  if (!Promise.withResolvers) {
-    Promise.withResolvers = function <T>() {
-      let resolve!: (value: T | PromiseLike<T>) => void;
-      let reject!: (reason?: unknown) => void;
-
-      const promise = new Promise<T>((res, rej) => {
-        resolve = res;
-        reject = rej;
-      });
-
-      return { promise, resolve, reject };
-    };
-  }
-}
+// Promise.withResolvers polyfill is loaded via polyfills.ts (webpack entry in next.config.ts).
 
 const inter = Inter({
   variable: '--font-lato',

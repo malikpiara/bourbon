@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { capitalizeWithPreserve } from '@/utils/format/capitalise';
 import { cleanSpaces } from '@/utils/format';
+import { MAX_PRODUCT_QUANTITY } from '@/lib/constants';
 
 // We define the expected shape of our props
 interface ProductRowProps {
@@ -93,7 +94,10 @@ export default function ProductRow({
                   <SelectValue placeholder="Quantidade" />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                  {Array.from(
+                    { length: MAX_PRODUCT_QUANTITY },
+                    (_, i) => i + 1
+                  ).map((num) => (
                     <SelectItem key={num} value={num.toString()}>
                       {num}
                     </SelectItem>

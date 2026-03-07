@@ -1,4 +1,5 @@
-// Interfaces
+// Document data interfaces used across the app: form output → PDF rendering.
+import { PaymentTypeValue } from '@/lib/constants';
 
 export interface Address {
   address1: string;
@@ -48,7 +49,7 @@ export interface Order {
   notes?: string;
   firstPayment?: number;
   secondPayment?: number;
-  paymentType?: 'mbway' | 'cash' | 'card' | 'transfer' | 'cheque';
+  paymentType?: PaymentTypeValue;
   payments?: PaymentInfo[];
 }
 

@@ -1,5 +1,8 @@
+// Transforms validated form values (FormValues) into the DocumentData shape
+// consumed by the PDF document components.
 import { FormValues } from '@/lib/schema';
 import { Customer, DocumentData, PaymentInfo } from '@/types/document';
+import { PaymentTypeValue } from '@/lib/constants';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import {
@@ -19,9 +22,7 @@ export const formatOrderData = (values: FormValues): DocumentData => {
     }
 
     const orderItems = values.tableEntries.map((entry) => {
-      const quantity = Number(entry.quantity);
       const unitPrice = entry.unitPrice; // Always a number now
-
       const total = entry.quantity * unitPrice;
 
       if (isNaN(total)) {
@@ -59,7 +60,7 @@ export const formatOrderData = (values: FormValues): DocumentData => {
       },
     };
 
-    let payments: PaymentInfo[] = [];
+    const payments: PaymentInfo[] = [];
 
     if (values.salesType === 'delivery') {
       customerData.address = {
@@ -126,7 +127,7 @@ export const formatOrderData = (values: FormValues): DocumentData => {
         ...(values.salesType === 'delivery' && {
           firstPayment: values.firstPayment,
           secondPayment: values.secondPayment,
-          paymentType: values.paymentType,
+          paymentType: values.paymentType as PaymentTypeValue,
           payments, // Add the formatted payments array
         }),
       },

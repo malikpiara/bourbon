@@ -1,14 +1,16 @@
+// Zod validation schemas for the sales form.
+// Uses a discriminated union on salesType to enforce different field requirements
+// for delivery vs direct sales.
 import { isPossiblePhoneNumber } from 'react-phone-number-input';
 import { z } from 'zod';
+import { PAYMENT_TYPES } from '@/lib/constants';
 
-// Payment type schema. If you change this, you need to change the value in document.ts
-const paymentTypeSchema = z.enum([
-  'mbway',
-  'cash',
-  'card',
-  'transfer',
-  'cheque',
-]);
+// Derived from PAYMENT_TYPES — single source of truth for payment type values.
+const paymentTypeValues = PAYMENT_TYPES.map((t) => t.value) as [
+  string,
+  ...string[],
+];
+const paymentTypeSchema = z.enum(paymentTypeValues);
 
 // Table Entries Schema
 export const tableEntrySchema = z.object({
@@ -77,9 +79,17 @@ const directSalesSchema = z.object({
   phoneNumber: z
     .string()
     .optional()
-    .refine((val) => !val || isPossiblePhoneNumber(val), {
-      message: 'Número de telefone inválido',
-    }),
+    .refine(
+      (val) => {
+        if (!val) return true;
+        try {
+          return isPossiblePhoneNumber(val);
+        } catch {
+          return false;
+        }
+      },
+      { message: 'Número de telefone inválido' }
+    ),
   ...billingAddressFields,
 });
 
@@ -91,9 +101,16 @@ const deliverySchema = z.object({
   phoneNumber: z
     .string()
     .min(1, 'O número de telefone é obrigatório')
-    .refine((val) => isPossiblePhoneNumber(val), {
-      message: 'Número de telefone inválido',
-    }),
+    .refine(
+      (val) => {
+        try {
+          return isPossiblePhoneNumber(val);
+        } catch {
+          return false;
+        }
+      },
+      { message: 'Número de telefone inválido' }
+    ),
   address1: z.string().min(5, 'A morada deve ter pelo menos 5 caracteres.'),
   address2: z.string().optional(),
   postalCode: z
