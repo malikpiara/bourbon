@@ -102,10 +102,10 @@ export function AddressFieldGroup({ form, fields }: AddressFieldGroupProps) {
                   maxLength={7}
                   {...field}
                   onKeyDown={handleOTPKeyDown}
-                  onBlur={(e) => {
+                  onBlur={async (e) => {
                     const postalCode = e.target.value.replace(/\s/g, '');
                     field.onChange(postalCode);
-                    const city = getCityFromPostalCode(postalCode);
+                    const city = await getCityFromPostalCode(postalCode);
                     if (city) {
                       form.setValue(fields.city, city);
                     }
