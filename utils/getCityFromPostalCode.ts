@@ -1,3 +1,5 @@
+// Looks up a Portuguese city name from a 7-digit postal code (XXXX-XXX).
+// Uses postalCodeMap.json (~5.5 MB) which maps prefix-extension keys to city names.
 import rawPostalCodeMap from './postalCodeMap.json';
 
 const postalCodeMap = rawPostalCodeMap as Record<string, string>;
@@ -24,7 +26,8 @@ export function getCityFromPostalCode(postalCode: string): string | undefined {
   const key = `${prefix}-${extension}`; // e.g. "3750-61"
 
   // 5. Lookup in postalCodeMap
-  return capitalizeFirstLetter(postalCodeMap[key]);
+  const city = postalCodeMap[key];
+  return city ? capitalizeFirstLetter(city) : undefined;
 }
 
 function capitalizeFirstLetter(string: string) {

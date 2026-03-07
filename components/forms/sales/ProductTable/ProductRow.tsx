@@ -22,8 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { capitalizeWithPreserve } from '@/utils/format/capitalise';
-import { cleanSpaces } from '@/utils/format';
+import { createFormattedBlurHandler } from '@/utils/format';
 import { MAX_PRODUCT_QUANTITY } from '@/lib/constants';
 
 // We define the expected shape of our props
@@ -64,12 +63,7 @@ export default function ProductRow({
               {...inputField}
               placeholder="Referência"
               error={error?.message}
-              onBlur={(e) => {
-                const cleanValue = cleanSpaces(e.target.value);
-                const formattedValue = capitalizeWithPreserve(cleanValue);
-                inputField.onChange(formattedValue);
-                inputField.onBlur();
-              }}
+              onBlur={createFormattedBlurHandler(inputField)}
             />
           )}
         />
@@ -123,12 +117,7 @@ export default function ProductRow({
               {...inputField}
               placeholder="Designação"
               error={error?.message}
-              onBlur={(e) => {
-                const cleanValue = cleanSpaces(e.target.value);
-                const formattedValue = capitalizeWithPreserve(cleanValue);
-                inputField.onChange(formattedValue);
-                inputField.onBlur();
-              }}
+              onBlur={createFormattedBlurHandler(inputField)}
             />
           )}
         />

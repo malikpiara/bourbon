@@ -1,3 +1,5 @@
+// Customer data form section: name, email, phone, NIF, plus delivery/billing
+// address groups. Renders different fields based on salesType (direct vs delivery).
 import { UseFormReturn } from 'react-hook-form';
 import {
   FormField,
@@ -12,14 +14,13 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-  InputOTPSeparator,
 } from '@/components/ui/input-otp';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormValues } from '@/lib/schema';
 import { useEnterKeyBlur } from '@/hooks/useEnterKeyBlur';
-import { capitalizeWithPreserve, cleanSpaces } from '@/utils/format';
+import { createFormattedBlurHandler } from '@/utils/format';
 import { PhoneInput } from '@/components/ui/phone-input';
-import { getCityFromPostalCode } from '@/utils/getCityFromPostalCode';
+import { AddressFieldGroup } from './AddressFieldGroup';
 
 interface CustomerSectionProps {
   form: UseFormReturn<FormValues>;
@@ -61,12 +62,7 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
                 autoComplete="false"
                 {...field}
                 onKeyDown={handleEnterKey}
-                onBlur={(e) => {
-                  const cleanValue = cleanSpaces(e.target.value);
-                  const formattedValue = capitalizeWithPreserve(cleanValue);
-                  field.onChange(formattedValue);
-                  field.onBlur();
-                }}
+                onBlur={createFormattedBlurHandler(field)}
               />
             </FormControl>
             <FormDescription>
@@ -179,118 +175,15 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
             Morada de Entrega
           </h2>
 
-          <FormField
-            control={form.control}
-            name="address1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Linha de morada 1</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Nome e número da rua"
-                    autoComplete="new-password"
-                    {...field}
-                    onKeyDown={handleEnterKey}
-                    onBlur={(e) => {
-                      const cleanValue = cleanSpaces(e.target.value);
-                      const formattedValue = capitalizeWithPreserve(cleanValue);
-                      field.onChange(formattedValue);
-                      field.onBlur();
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <AddressFieldGroup
+            form={form}
+            fields={{
+              address1: 'address1',
+              address2: 'address2',
+              postalCode: 'postalCode',
+              city: 'city',
+            }}
           />
-
-          <FormField
-            control={form.control}
-            name="address2"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Linha de morada 2</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Apartamento, bloco, edificio, andar, etc."
-                    autoComplete="new-password"
-                    {...field}
-                    onKeyDown={handleEnterKey}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex gap-14">
-            <div>
-              <FormField
-                control={form.control}
-                name="postalCode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Código Postal</FormLabel>
-                    <FormControl>
-                      <InputOTP
-                        maxLength={7}
-                        {...field}
-                        onKeyDown={handleOTPKeyDown}
-                        onBlur={(e) => {
-                          const postalCode = e.target.value.replace(/\s/g, '');
-                          field.onChange(postalCode);
-                          const city = getCityFromPostalCode(postalCode);
-                          if (city) {
-                            form.setValue('city', city);
-                          }
-                          field.onBlur();
-                        }}
-                      >
-                        <InputOTPGroup>
-                          {[...Array(4)].map((_, index) => (
-                            <InputOTPSlot key={index} index={index} />
-                          ))}
-                        </InputOTPGroup>
-                        <InputOTPSeparator />
-                        <InputOTPGroup>
-                          {[...Array(3)].map((_, index) => (
-                            <InputOTPSlot key={index + 4} index={index + 4} />
-                          ))}
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex-grow">
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cidade</FormLabel>
-                    <FormControl>
-                      <Input
-                        autoComplete="new-password"
-                        {...field}
-                        onKeyDown={handleEnterKey}
-                        onBlur={(e) => {
-                          const formattedValue = capitalizeWithPreserve(
-                            e.target.value
-                          );
-                          field.onChange(formattedValue);
-                          field.onBlur();
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
 
           <FormField
             control={form.control}
@@ -356,115 +249,15 @@ export function CustomerSection({ form, className }: CustomerSectionProps) {
             Morada de Faturação{!isDelivery && ' (opcional)'}
           </h3>
 
-          <FormField
-            control={form.control}
-            name="billingAddress1"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Linha de morada 1</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Nome e número da rua"
-                    autoComplete="new-password"
-                    {...field}
-                    onKeyDown={handleEnterKey}
-                    onBlur={(e) => {
-                      const cleanValue = cleanSpaces(e.target.value);
-                      const formattedValue = capitalizeWithPreserve(cleanValue);
-                      field.onChange(formattedValue);
-                      field.onBlur();
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <AddressFieldGroup
+            form={form}
+            fields={{
+              address1: 'billingAddress1',
+              address2: 'billingAddress2',
+              postalCode: 'billingPostalCode',
+              city: 'billingCity',
+            }}
           />
-
-          <FormField
-            control={form.control}
-            name="billingAddress2"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Linha de morada 2</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Apartamento, bloco, edificio, andar, etc."
-                    autoComplete="new-password"
-                    {...field}
-                    onKeyDown={handleEnterKey}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="flex gap-14">
-            <FormField
-              control={form.control}
-              name="billingPostalCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Código Postal</FormLabel>
-                  <FormControl>
-                    <InputOTP
-                      maxLength={7}
-                      {...field}
-                      onKeyDown={handleOTPKeyDown}
-                      onBlur={(e) => {
-                        const postalCode = e.target.value.replace(/\s/g, '');
-                        field.onChange(postalCode);
-                        const city = getCityFromPostalCode(postalCode);
-                        if (city) {
-                          form.setValue('billingCity', city);
-                        }
-                        field.onBlur();
-                      }}
-                    >
-                      <InputOTPGroup>
-                        {[...Array(4)].map((_, index) => (
-                          <InputOTPSlot key={index} index={index} />
-                        ))}
-                      </InputOTPGroup>
-                      <InputOTPSeparator />
-                      <InputOTPGroup>
-                        {[...Array(3)].map((_, index) => (
-                          <InputOTPSlot key={index + 4} index={index + 4} />
-                        ))}
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="billingCity"
-              render={({ field }) => (
-                <FormItem className="flex-grow">
-                  <FormLabel>Cidade</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      autoComplete="new-password"
-                      onKeyDown={handleEnterKey}
-                      onBlur={(e) => {
-                        const formattedValue = capitalizeWithPreserve(
-                          e.target.value
-                        );
-                        field.onChange(formattedValue);
-                        field.onBlur();
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
         </div>
       )}
     </div>
