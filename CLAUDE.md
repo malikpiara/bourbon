@@ -35,6 +35,7 @@ polyfills.ts    → Promise.withResolvers polyfill (injected via webpack entry)
 ```bash
 pnpm dev          # Start dev server (Turbopack)
 pnpm build        # Production build (also runs type checking)
+pnpm type-check   # TypeScript type checking only (no build output)
 pnpm lint         # ESLint
 pnpm format       # Prettier
 ```
@@ -45,7 +46,10 @@ pnpm format       # Prettier
 - **Language:** UI text is in Portuguese. Code, comments, and commit messages are in English.
 - **Single source of truth:** Business constants (stores, payment types, quantities) live in `lib/constants.ts`. Types are derived from the constant arrays where possible (e.g. `PaymentTypeValue`).
 - **Schema-driven:** Form validation and types flow from Zod schemas in `lib/schema.ts`. The `FormValues` type is inferred from the schema.
-- **Formatting pipeline:** Raw form values → `formatOrderData()` → `DocumentData` → PDF components. The transform in `utils/format/orderData.ts` is the single normalisation boundary.
+- **Formatting pipeline:** Raw form values → `formatOrderData()` → `DocumentData` → PDF components. The transform in `utils/format/orderData.ts` is the single normalisation boundary. `unitPrice` is always `number` after Zod transformation.
+- **Total computation:** Use `computeTotal()` from `utils/format/total.ts` instead of inline reduce calls. For raw form values where `unitPrice` may still be a string, `parseUnitPrice()` handles comma-decimal parsing.
+- **Address fields:** `AddressFieldGroup` is a reusable component for delivery and billing address blocks (field names mapped via props). Postal code lookup is async (lazy-loads the 5.3 MB JSON on first use).
+- **Form type narrowing:** `PaymentSection` receives `UseFormReturn<FormValues>` but narrows to `UseFormReturn<DeliveryFormValues>` at the component boundary (safe because it only renders when `salesType === 'delivery'`).
 - **Polyfills:** `Promise.withResolvers` polyfill exists in two places intentionally — `polyfills.ts` (canonical, webpack-injected) and `PDFViewer.tsx` (defensive try-catch fallback for older browsers). Do not remove the PDFViewer copy.
 - **Pre-commit:** Husky + lint-staged runs ESLint and Prettier on staged files. All commits must pass.
 
@@ -57,6 +61,5 @@ pnpm format       # Prettier
 
 ## Gotchas
 
-- `unitPrice` flows as `string | number` through the form layer but should be `number` by the time it reaches PDF components. There are type guards in PDF documents that should eventually be removed (see plan item 2.5).
-- The postal code JSON (`postalCodeMap.json`) is 5.5MB and currently bundled client-side. Lazy-loading is planned (see plan item 2.4).
-- `@ts-expect-error` comments in `PaymentSection.tsx` suppress react-hook-form discriminated union narrowing issues. Planned fix in item 2.3.
+- `unitPrice` in the form layer (Zod schema) accepts `string | number` input but always transforms to `number`. The `OrderItem` interface and all downstream code (PDF components, orderData) use strictly `number`. Only `computeTotal`/`parseUnitPrice` handle the string case for reactive form watchers.
+- The postal code JSON (`postalCodeMap.json`, ~5.3 MB) is lazy-loaded via dynamic `import()` on first postal code blur. Cached after first load. Do not convert back to a static import.

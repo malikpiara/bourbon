@@ -27,7 +27,7 @@ export interface OrderItem {
   ref: string;
   description: string;
   quantity: number;
-  unitPrice: string | number;
+  unitPrice: number;
   total: number;
 }
 

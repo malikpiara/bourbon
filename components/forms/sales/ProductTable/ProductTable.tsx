@@ -12,6 +12,7 @@ import { PlusCircle } from 'lucide-react';
 import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { FormValues } from '@/lib/schema';
 import { formatCurrency } from '@/utils/format/currency';
+import { computeTotal } from '@/utils/format/total';
 import { EmptyState } from './EmptyState';
 import ProductRow from './ProductRow';
 
@@ -56,23 +57,14 @@ export function ProductTable({ form }: ProductTableProps) {
     remove(index);
   };
 
-  const totalQuantity = fields.reduce((sum, field, index) => {
-    const quantity = form.watch(`tableEntries.${index}.quantity`) || 0;
-    return sum + quantity;
-  }, 0);
+  const watchedEntries = form.watch('tableEntries');
 
-  const totalPrice = fields.reduce((sum, field, index) => {
-    const quantity = form.watch(`tableEntries.${index}.quantity`) || 0;
-    const rawUnitPrice = form.watch(`tableEntries.${index}.unitPrice`) || '0';
+  const totalQuantity = watchedEntries.reduce(
+    (sum, entry) => sum + (entry.quantity || 0),
+    0
+  );
 
-    // Replace commas with dots and parse the value
-    const unitPrice = parseFloat(rawUnitPrice.toString().replace(',', '.'));
-
-    // If unitPrice is not a valid number, use 0 as a fallback
-    const price = isNaN(unitPrice) ? 0 : unitPrice;
-
-    return sum + quantity * price;
-  }, 0);
+  const totalPrice = computeTotal(watchedEntries);
 
   if (fields.length === 0) {
     return <EmptyState onAddProduct={handleAppend} />;

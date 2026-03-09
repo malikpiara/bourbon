@@ -1,53 +1,69 @@
+// Next.js configuration: security headers, bundle optimisation, and polyfill injection.
 import type { NextConfig } from 'next';
 
 const config: NextConfig = {
+  // ── Security ──────────────────────────────────────────────────────────
+  poweredByHeader: false, // Remove "X-Powered-By: Next.js" header
+  compress: true, // Gzip responses (default true, explicit for clarity)
+  reactStrictMode: true, // Catch bugs in development
+
+  // ── Bundle optimisation ───────────────────────────────────────────────
+  // Tree-shake barrel exports — only import what's used from these packages.
+  optimizePackageImports: ['lucide-react', 'date-fns'],
+
+  // ── Webpack ───────────────────────────────────────────────────────────
   webpack: (config) => {
-    // First, let's handle the polyfill entry point
+    // Inject Promise.withResolvers polyfill as a separate entry point.
     const entry = async () => {
       const entries = await (typeof config.entry === 'function'
         ? config.entry()
         : config.entry);
       return {
         ...entries,
-        // Add our polyfill as a new entry point
         polyfills: './polyfills.ts',
       };
     };
 
-    // Now return the complete configuration
     return {
       ...config,
-      entry, // Add our modified entry configuration
+      entry,
       resolve: {
         ...config.resolve,
         alias: {
           ...config.resolve?.alias,
-          canvas: false,
+          canvas: false, // Stub canvas for @react-pdf/renderer
         },
       },
     };
   },
 
-  // Keep your existing headers configuration
+  // ── HTTP headers ──────────────────────────────────────────────────────
   async headers() {
     return [
       {
         source: '/:path*',
         headers: [
+          // Required for PDF.js SharedArrayBuffer support
+          { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          // Security hardening
           {
-            key: 'Cross-Origin-Embedder-Policy',
-            value: 'require-corp',
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
           },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
-            key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
           },
         ],
       },
     ];
   },
 
-  // Keep your existing experimental configuration
+  // ── Turbopack (dev) ───────────────────────────────────────────────────
   experimental: {
     turbo: {
       rules: {
