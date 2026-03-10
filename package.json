@@ -89,7 +89,7 @@
     "pdfjs-dist": "4.8.69",
     "posthog-js": "^1.342.1",
     "react": "^19.2.4",
-    "react-day-picker": "8.10.1",
+    "react-day-picker": "9.14.0",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.71.1",
     "react-pdf": "9.0.0",
