@@ -11,15 +11,22 @@ import {
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Store } from 'lucide-react';
-import { STORES } from '@/lib/constants';
+
+export interface StoreOption {
+  id: string;
+  name: string;
+  salesTypes: ('delivery' | 'direct')[];
+}
 
 interface StoreSelectionProps {
   form: UseFormReturn<FormValues>;
+  stores: StoreOption[];
   onStoreSelect: (value: string) => void;
 }
 
 export const StoreSelection = ({
   form,
+  stores,
   onStoreSelect,
 }: StoreSelectionProps) => (
   <div className="space-y-8">
@@ -31,7 +38,6 @@ export const StoreSelection = ({
       name="storeId"
       render={({ field }) => (
         <FormItem className="space-y-3 animate-slide-fade">
-          {/* <FormLabel>Loja</FormLabel> */}
           <FormControl>
             <RadioGroup
               onValueChange={(value: string) => {
@@ -41,7 +47,7 @@ export const StoreSelection = ({
               defaultValue={field.value}
               className="grid grid-cols-1 sm:grid-cols-3 gap-4"
             >
-              {STORES.map((store) => (
+              {stores.map((store) => (
                 <label
                   key={store.id}
                   htmlFor={`store-${store.id}`}
@@ -54,9 +60,6 @@ export const StoreSelection = ({
                   />
                   <Store className="mb-3 h-6 w-6" />
                   <h3 className="text-lg font-medium">{store.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {store.description}
-                  </p>
                 </label>
               ))}
             </RadioGroup>

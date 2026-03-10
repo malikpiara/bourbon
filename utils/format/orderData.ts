@@ -1,20 +1,23 @@
 // Transforms validated form values (FormValues) into the DocumentData shape
 // consumed by the PDF document components.
 import { FormValues } from '@/lib/schema';
-import { Customer, DocumentData, PaymentInfo } from '@/types/document';
+import { Company, Customer, DocumentData, PaymentInfo } from '@/types/document';
 import { PaymentTypeValue } from '@/lib/constants';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import {
-  COMPANY_INFO,
-  VAT_RATE,
-  DATE_FORMAT,
-  PAYMENT_TYPES,
-} from '@/lib/constants';
+import { VAT_RATE, DATE_FORMAT, PAYMENT_TYPES } from '@/lib/constants';
 import { formatNIF, formatPostalCode } from './form';
 import { formatPhoneNumber } from 'react-phone-number-input';
 
-export const formatOrderData = (values: FormValues): DocumentData => {
+interface FormatOptions {
+  company: Company;
+  storeCode: string;
+}
+
+export const formatOrderData = (
+  values: FormValues,
+  options: FormatOptions
+): DocumentData => {
   try {
     // Validate that we have at least one table entry
     if (!values.tableEntries.length) {
@@ -113,11 +116,11 @@ export const formatOrderData = (values: FormValues): DocumentData => {
     }
 
     return {
-      company: COMPANY_INFO,
+      company: options.company,
       customer: customerData,
       order: {
         id: values.orderNumber.toString(),
-        storeId: `OCT ${values.storeId}`,
+        storeId: options.storeCode,
         salesType: values.salesType, // Include salesType
         date: format(values.date, DATE_FORMAT, { locale: pt }),
         items: orderItems,
