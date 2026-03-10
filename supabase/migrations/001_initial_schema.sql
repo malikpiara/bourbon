@@ -1,4 +1,4 @@
--- Initial database schema for Bourbn (Hermes).
+-- Initial database schema for Burbbon (Hermes).
 -- Tables, RLS policies, triggers, and helper functions for multi-tenant sales document management.
 
 -- ═══════════════════════════════════════════════════════════════════════

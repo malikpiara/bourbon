@@ -1,4 +1,4 @@
-Bourbn is a specialized order management system designed for furniture sales. At its core, it transforms the process of creating order documents from a manual task into a streamlined digital workflow. The system lets sales staff input customer and order details through a well-structured form interface, then automatically generates a professionally formatted PDF document that serves as the official order record.
+Burbbon is a specialized order management system designed for furniture sales. At its core, it transforms the process of creating order documents from a manual task into a streamlined digital workflow. The system lets sales staff input customer and order details through a well-structured form interface, then automatically generates a professionally formatted PDF document that serves as the official order record.
 
 ## Getting Started
 

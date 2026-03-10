@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Bourbn',
+  title: 'Burbbon',
   description:
     'Digital bridge between a traditional sales process and modern document management.',
 };

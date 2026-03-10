@@ -1,8 +1,13 @@
 // Authenticated org layout: verifies the user is a member of the org,
-// provides navigation, and handles sign-out.
+// provides sidebar navigation, and handles sign-out.
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { OrgNav } from './nav';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+import { AppSidebar } from './app-sidebar';
 
 interface MembershipRow {
   org_id: string;
@@ -38,9 +43,7 @@ export default async function OrgLayout({
 
   const membership = data as MembershipRow[] | null;
 
-  const currentOrg = membership?.find(
-    (m) => m.organizations?.slug === orgSlug
-  );
+  const currentOrg = membership?.find((m) => m.organizations?.slug === orgSlug);
 
   if (!currentOrg) {
     // User is not a member of this org — redirect to their default org
@@ -54,9 +57,14 @@ export default async function OrgLayout({
   const org = currentOrg.organizations;
 
   return (
-    <div className="min-h-screen">
-      <OrgNav orgName={org.name} orgSlug={org.slug} />
-      <main>{children}</main>
-    </div>
+    <SidebarProvider>
+      <AppSidebar orgName={org.name} orgSlug={org.slug} userId={user.id} />
+      <SidebarInset>
+        <header className="flex h-12 items-center border-b px-4">
+          <SidebarTrigger />
+        </header>
+        <main>{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

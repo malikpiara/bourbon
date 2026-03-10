@@ -1,4 +1,4 @@
--- Seed data for Bourbn (Hermes).
+-- Seed data for Burbbon.
 -- Inserts the Octosólido organization and its 3 stores.
 -- Admin user must be created manually in Supabase Auth dashboard,
 -- then linked via INSERT INTO organization_members.
