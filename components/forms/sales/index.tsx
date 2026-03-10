@@ -20,6 +20,7 @@ import { PaymentSection } from './PaymentSection';
 import { generateOrderNumber } from '@/utils/generateOrderNumber';
 import { createClient } from '@/lib/supabase/client';
 import { insertSalesDocument } from '@/lib/supabase/mutations/sales-document';
+import { updateSalesDocument } from '@/lib/supabase/mutations/update-sales-document';
 
 // Define our form steps
 type FormStep = 'store' | 'salesType' | 'details' | 'payments' | 'preview';
@@ -30,6 +31,12 @@ interface SalesFormProps {
   orgId: string;
   /** Maps store UUID → store code (e.g. "OCT 1") */
   storeCodeMap: Record<string, string>;
+  /** Pre-filled form values when editing an existing document */
+  initialData?: FormValues;
+  /** Supabase document ID when editing */
+  documentId?: string;
+  /** When true, skips store/salesType selection and updates instead of inserts */
+  isEditMode?: boolean;
 }
 
 export function SalesForm({
@@ -37,8 +44,13 @@ export function SalesForm({
   company,
   orgId,
   storeCodeMap,
+  initialData,
+  documentId,
+  isEditMode = false,
 }: SalesFormProps) {
-  const [currentStep, setCurrentStep] = useState<FormStep>('store');
+  const [currentStep, setCurrentStep] = useState<FormStep>(
+    isEditMode ? 'details' : 'store'
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
@@ -48,7 +60,7 @@ export function SalesForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
-    defaultValues: {
+    defaultValues: initialData ?? {
       storeId: '',
       salesType: undefined,
       name: '',
@@ -114,17 +126,27 @@ export function SalesForm({
           return;
         }
 
-        const { orderNumber } = await insertSalesDocument({
-          supabase,
-          orgId,
-          storeId: values.storeId,
-          userId: user.id,
-          values,
-        });
+        if (isEditMode && documentId) {
+          await updateSalesDocument({
+            supabase,
+            documentId,
+            storeId: values.storeId,
+            userId: user.id,
+            values,
+          });
+        } else {
+          const { orderNumber } = await insertSalesDocument({
+            supabase,
+            orgId,
+            storeId: values.storeId,
+            userId: user.id,
+            values,
+          });
 
-        // Update the form's order number with the generated one
-        form.setValue('orderNumber', orderNumber);
-        values = { ...values, orderNumber };
+          // Update the form's order number with the generated one
+          form.setValue('orderNumber', orderNumber);
+          values = { ...values, orderNumber };
+        }
 
         setIsSaving(false);
 
@@ -142,7 +164,7 @@ export function SalesForm({
         );
       }
     },
-    [orgId, company, storeCodeMap, form]
+    [orgId, company, storeCodeMap, form, isEditMode, documentId]
   );
 
   const handleDownload = useCallback(
@@ -184,7 +206,7 @@ export function SalesForm({
   return (
     <FormProvider {...form}>
       <div className="space-y-8">
-        {process.env.NODE_ENV === 'development' && (
+        {process.env.NODE_ENV === 'development' && !isEditMode && (
           <Button
             type="button"
             onClick={handleFillTestData}

@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,12 +43,12 @@ export default function ResetPasswordPage() {
           Se o email estiver associado a uma conta, receberá instruções para
           redefinir a palavra-passe.
         </p>
-        <a
+        <Link
           href="/login"
           className="text-sm text-gray-500 hover:text-gray-700 underline"
         >
           Voltar ao início de sessão
-        </a>
+        </Link>
       </div>
     );
   }
@@ -94,12 +95,12 @@ export default function ResetPasswordPage() {
       </form>
 
       <div className="text-center">
-        <a
+        <Link
           href="/login"
           className="text-sm text-gray-500 hover:text-gray-700 underline"
         >
           Voltar ao início de sessão
-        </a>
+        </Link>
       </div>
     </div>
   );

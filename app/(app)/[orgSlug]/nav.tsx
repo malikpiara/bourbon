@@ -31,6 +31,12 @@ export function OrgNav({
         >
           Nova Venda
         </a>
+        <a
+          href={`/${orgSlug}/sales`}
+          className="text-sm text-gray-700 hover:text-black"
+        >
+          Histórico
+        </a>
       </div>
       <Button variant="ghost" size="sm" onClick={handleSignOut}>
         Sair
