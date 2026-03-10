@@ -2,12 +2,9 @@
 // provides sidebar navigation, and handles sign-out.
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from './app-sidebar';
+import { ElectronControls, WindowToolbar } from './window-toolbar';
 
 interface MembershipRow {
   org_id: string;
@@ -58,11 +55,10 @@ export default async function OrgLayout({
 
   return (
     <SidebarProvider>
+      <ElectronControls />
       <AppSidebar orgName={org.name} orgSlug={org.slug} userId={user.id} />
       <SidebarInset>
-        <header className="flex h-12 items-center border-b px-4">
-          <SidebarTrigger />
-        </header>
+        <WindowToolbar />
         <main>{children}</main>
       </SidebarInset>
     </SidebarProvider>

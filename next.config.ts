@@ -6,6 +6,7 @@ const config: NextConfig = {
   poweredByHeader: false, // Remove "X-Powered-By: Next.js" header
   compress: true, // Gzip responses (default true, explicit for clarity)
   reactStrictMode: true, // Catch bugs in development
+  output: 'standalone', // Minimal build for Electron packaging
 
   // ── Turbopack ─────────────────────────────────────────────────────────
   // Turbopack is the default bundler in Next.js 16 for both dev and build.

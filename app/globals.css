@@ -54,6 +54,14 @@ body {
   font-family: var(--font-inter); /* Apply Lato globally */
 }
 
+/* Electron: draggable titlebar region (macOS hiddenInset) */
+.electron-drag {
+  -webkit-app-region: drag;
+}
+.electron-no-drag {
+  -webkit-app-region: no-drag;
+}
+
 body::selection {
   background: rgba(250, 233, 157, 0.5); /* Light yellow */
   color: #000;
