@@ -38,9 +38,10 @@ const sharedFields = {
   }),
   name: z.string().min(2, 'O nome deve ter pelo menos 2 caracteres.'),
   storeId: z.string().nonempty('Por favor selecione uma loja.'),
-  orderNumber: z.coerce
-    .number()
-    .min(4, 'O número da encomenda deve ter pelo menos 4 caracteres.'),
+  orderNumber: z.union([
+    z.string().min(1, 'O número da encomenda é obrigatório.'),
+    z.number().transform(String),
+  ]),
   date: z.date().refine((d) => !isNaN(d.getTime()), {
     message: 'Data inválida.',
   }),

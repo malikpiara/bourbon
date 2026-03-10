@@ -68,7 +68,7 @@ export function OrderMetadata({
                 <FormLabel>Número da Encomenda</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="6111"
+                    placeholder="2603-7K2M"
                     autoComplete="false"
                     {...field}
                     onKeyDown={handleEnterKey}

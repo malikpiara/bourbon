@@ -1,4 +1,4 @@
-// Next.js configuration: security headers, bundle optimisation, and polyfill injection.
+// Next.js configuration: security headers, canvas stub, and polyfill setup.
 import type { NextConfig } from 'next';
 
 const config: NextConfig = {
@@ -7,34 +7,14 @@ const config: NextConfig = {
   compress: true, // Gzip responses (default true, explicit for clarity)
   reactStrictMode: true, // Catch bugs in development
 
-  // ── Bundle optimisation ───────────────────────────────────────────────
-  // Tree-shake barrel exports — only import what's used from these packages.
-  optimizePackageImports: ['lucide-react', 'date-fns'],
-
-  // ── Webpack ───────────────────────────────────────────────────────────
-  webpack: (config) => {
-    // Inject Promise.withResolvers polyfill as a separate entry point.
-    const entry = async () => {
-      const entries = await (typeof config.entry === 'function'
-        ? config.entry()
-        : config.entry);
-      return {
-        ...entries,
-        polyfills: './polyfills.ts',
-      };
-    };
-
-    return {
-      ...config,
-      entry,
-      resolve: {
-        ...config.resolve,
-        alias: {
-          ...config.resolve?.alias,
-          canvas: false, // Stub canvas for @react-pdf/renderer
-        },
-      },
-    };
+  // ── Turbopack ─────────────────────────────────────────────────────────
+  // Turbopack is the default bundler in Next.js 16 for both dev and build.
+  // It handles tree-shaking automatically (no need for optimizePackageImports).
+  turbopack: {
+    root: __dirname,
+    resolveAlias: {
+      canvas: './lib/stubs/canvas.js', // Stub canvas for @react-pdf/renderer
+    },
   },
 
   // ── HTTP headers ──────────────────────────────────────────────────────
@@ -61,17 +41,6 @@ const config: NextConfig = {
         ],
       },
     ];
-  },
-
-  // ── Turbopack (dev) ───────────────────────────────────────────────────
-  experimental: {
-    turbo: {
-      rules: {
-        resolveAlias: {
-          canvas: false,
-        },
-      },
-    },
   },
 };
 

@@ -1,48 +1,40 @@
-'use client';
-import { Skeleton } from '@/components/ui/skeleton';
-import dynamic from 'next/dynamic';
+// Root page: resolves the user's org and redirects to their sales page.
+// Unauthenticated users are caught by the proxy and redirected to /login.
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 
-// Dynamically import the SalesForm component with client-side only rendering
-const SalesForm = dynamic(
-  () => import('@/components/forms/sales').then((mod) => mod.SalesForm),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="p-7 w-full max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <Skeleton className="h-8 w-[200px]" />
-        </div>
+interface MembershipRow {
+  org_id: string;
+  is_default: boolean;
+  organizations: { slug: string };
+}
 
-        {/* Main content area */}
-        <div className="flex space-x-8">
-          {/* Main content */}
-          <div className="flex-grow space-y-6">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-[90%]" />
-            <Skeleton className="h-4 w-[80%]" />
+export default async function Home() {
+  const supabase = await createClient();
 
-            <div className="space-y-2 mt-8">
-              <Skeleton className="h-4 w-[70%]" />
-              <Skeleton className="h-4 w-[60%]" />
-              <Skeleton className="h-4 w-[80%]" />
-            </div>
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-            <div className="grid grid-cols-2 gap-4 mt-8">
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
-            </div>
-          </div>
-        </div>
-      </div>
-    ),
+  if (!user) {
+    redirect('/login');
   }
-);
 
-export default function Home() {
-  return (
-    <div className="p-8 m-14">
-      <SalesForm />
-    </div>
-  );
+  // Find the user's default org
+  const { data } = await supabase
+    .from('organization_members')
+    .select('org_id, is_default, organizations(slug)')
+    .eq('user_id', user.id)
+    .order('is_default', { ascending: false })
+    .limit(1)
+    .single();
+
+  const membership = data as MembershipRow | null;
+
+  if (membership?.organizations?.slug) {
+    redirect(`/${membership.organizations.slug}/sales/new`);
+  }
+
+  // No org found — this shouldn't happen for properly provisioned users
+  redirect('/login');
 }

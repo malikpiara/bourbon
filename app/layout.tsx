@@ -3,7 +3,7 @@ import { CSPostHogProvider } from './providers';
 import { Inter } from 'next/font/google';
 import './globals.css';
 
-// Promise.withResolvers polyfill is loaded via polyfills.ts (webpack entry in next.config.ts).
+// Promise.withResolvers polyfill is loaded via providers.tsx (imported at module level).
 
 const inter = Inter({
   variable: '--font-lato',

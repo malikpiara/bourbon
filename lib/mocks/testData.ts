@@ -2,13 +2,14 @@ import { FormValues } from '../schema';
 import { mockData } from './mockData';
 import { UseFormReturn } from 'react-hook-form';
 
-// Create test form values that match the form schema
-export const testFormValues: FormValues = {
+// Create test form values that match the form schema.
+// storeId is set dynamically based on available stores.
+export const createTestFormValues = (storeId: string): FormValues => ({
   name: mockData.customer.name,
-  storeId: mockData.order.storeId.replace('OCT ', ''),
+  storeId,
   salesType: 'delivery',
   notes: '',
-  orderNumber: parseInt(mockData.order.id),
+  orderNumber: mockData.order.id,
   date: new Date(),
   email: mockData.customer.email || '',
   phoneNumber: mockData.customer.phone?.startsWith('+')
@@ -27,7 +28,7 @@ export const testFormValues: FormValues = {
   city: mockData.customer.address.city,
   elevator: mockData.customer.address.hasElevator,
   sameAddress: true,
-  billingAddress1: '', // Ensure defaults exist for billing fields
+  billingAddress1: '',
   billingAddress2: '',
   billingPostalCode: '',
   billingCity: '',
@@ -38,12 +39,15 @@ export const testFormValues: FormValues = {
     quantity: item.quantity,
     unitPrice: item.unitPrice,
   })),
-};
+});
 
 // Helper function to fill form with test data
-export const fillFormWithTestData = (form: UseFormReturn<FormValues>) => {
-  form.reset(testFormValues, {
-    keepDirty: false, // Ensure values are fully replaced
-    keepValues: false, // Clear any prior values
+export const fillFormWithTestData = (
+  form: UseFormReturn<FormValues>,
+  storeId?: string
+) => {
+  form.reset(createTestFormValues(storeId || ''), {
+    keepDirty: false,
+    keepValues: false,
   });
 };

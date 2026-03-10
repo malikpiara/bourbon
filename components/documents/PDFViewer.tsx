@@ -170,6 +170,7 @@ const PDFViewer = ({ url, className }: PDFViewerProps) => {
   }, [handleTextSelection]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: hydration guard for SSR
     setIsClient(true);
     // Check if the necessary features are available
     if (typeof window !== 'undefined' && !Promise.withResolvers) {
@@ -207,13 +208,6 @@ const PDFViewer = ({ url, className }: PDFViewerProps) => {
     return null;
   }
 
-  // Common loading state component for reuse
-  const LoadingState = () => (
-    <div className="flex justify-center items-center h-64 bg-neutral-100 rounded-lg">
-      <p className="text-neutral-500">A carregar PDF...</p>
-    </div>
-  );
-
   // If we detect that the browser doesn't support necessary features
   if (initializationError) {
     return (
@@ -243,7 +237,11 @@ const PDFViewer = ({ url, className }: PDFViewerProps) => {
           file={url}
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={onDocumentLoadError}
-          loading={<LoadingState />}
+          loading={
+            <div className="flex justify-center items-center h-64 bg-neutral-100 rounded-lg">
+              <p className="text-neutral-500">A carregar PDF...</p>
+            </div>
+          }
           error={
             <div className="flex flex-col justify-center items-center h-64 bg-neutral-100 rounded-lg">
               <p className="text-neutral-500">

@@ -6,10 +6,10 @@ import { Form } from '@/components/ui/form';
 import { formSchema, FormValues } from '@/lib/schema';
 import { useCallback, useState } from 'react';
 import { DocumentData } from '@/types/document';
-import { DEFAULT_ORDER_NUMBER, STORES } from '@/lib/constants';
+import { Company } from '@/types/document';
 import { downloadPdf } from '@/utils/form';
 import { formatOrderData } from '@/utils/format';
-import { StoreSelection } from './StoreSelection';
+import { StoreSelection, StoreOption } from './StoreSelection';
 import { CustomerSection } from './CustomerSection';
 import ProductSection from './ProductSection';
 import { OrderMetadata } from './OrderMetadata';
@@ -17,13 +17,42 @@ import { fillFormWithTestData } from '@/lib/mocks/testData';
 import { SalesTypeSelection } from './SalesTypeSelection';
 import { PreviewStep } from './PreviewStep';
 import { PaymentSection } from './PaymentSection';
+import { generateOrderNumber } from '@/utils/generateOrderNumber';
+import { createClient } from '@/lib/supabase/client';
+import { insertSalesDocument } from '@/lib/supabase/mutations/sales-document';
+import { updateSalesDocument } from '@/lib/supabase/mutations/update-sales-document';
 
 // Define our form steps
 type FormStep = 'store' | 'salesType' | 'details' | 'payments' | 'preview';
 
-export function SalesForm() {
-  const [currentStep, setCurrentStep] = useState<FormStep>('store');
+interface SalesFormProps {
+  stores: StoreOption[];
+  company: Company;
+  orgId: string;
+  /** Maps store UUID → store code (e.g. "OCT 1") */
+  storeCodeMap: Record<string, string>;
+  /** Pre-filled form values when editing an existing document */
+  initialData?: FormValues;
+  /** Supabase document ID when editing */
+  documentId?: string;
+  /** When true, skips store/salesType selection and updates instead of inserts */
+  isEditMode?: boolean;
+}
+
+export function SalesForm({
+  stores,
+  company,
+  orgId,
+  storeCodeMap,
+  initialData,
+  documentId,
+  isEditMode = false,
+}: SalesFormProps) {
+  const [currentStep, setCurrentStep] = useState<FormStep>(
+    isEditMode ? 'details' : 'store'
+  );
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [documentData, setDocumentData] = useState<DocumentData | null>(null);
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
@@ -31,11 +60,11 @@ export function SalesForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onBlur',
-    defaultValues: {
+    defaultValues: initialData ?? {
       storeId: '',
       salesType: undefined,
       name: '',
-      orderNumber: DEFAULT_ORDER_NUMBER,
+      orderNumber: generateOrderNumber(),
       date: new Date(),
       email: '',
       phoneNumber: '',
@@ -52,14 +81,14 @@ export function SalesForm() {
       billingAddress2: '',
       billingPostalCode: '',
       billingCity: '',
-      firstPayment: 0, // Changed to number to match schema
-      secondPayment: 0, // Changed to number to match schema
+      firstPayment: 0,
+      secondPayment: 0,
       paymentType: undefined,
     },
   });
 
   const handleStoreSelect = (storeId: string) => {
-    const selectedStore = STORES.find((store) => store.id === storeId);
+    const selectedStore = stores.find((store) => store.id === storeId);
     form.setValue('storeId', storeId);
 
     if (selectedStore?.salesTypes.length === 1) {
@@ -75,27 +104,68 @@ export function SalesForm() {
     setCurrentStep('details');
   };
 
-  const handlePreviewGeneration = useCallback(async (values: FormValues) => {
-    try {
-      const result = formSchema.safeParse(values);
-      if (!result.success) {
-        console.error('Validation Errors:', result.error.errors);
-        setPdfError('Por favor, verifique os dados do formulário.');
-        return;
-      }
+  const handlePreviewGeneration = useCallback(
+    async (values: FormValues) => {
+      try {
+        const result = formSchema.safeParse(values);
+        if (!result.success) {
+          console.error('Validation Errors:', result.error.errors);
+          setPdfError('Por favor, verifique os dados do formulário.');
+          return;
+        }
 
-      const formattedData = formatOrderData(values);
-      setDocumentData(formattedData);
-      setCurrentStep('preview');
-    } catch (error) {
-      console.error('Error generating preview:', error);
-      setPdfError(
-        error instanceof Error
-          ? error.message
-          : 'Ocorreu um erro ao gerar a pré-visualização.'
-      );
-    }
-  }, []);
+        // Save to Supabase
+        setIsSaving(true);
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setPdfError('Sessão expirada. Por favor, inicie sessão novamente.');
+          return;
+        }
+
+        if (isEditMode && documentId) {
+          await updateSalesDocument({
+            supabase,
+            documentId,
+            storeId: values.storeId,
+            userId: user.id,
+            values,
+          });
+        } else {
+          const { orderNumber } = await insertSalesDocument({
+            supabase,
+            orgId,
+            storeId: values.storeId,
+            userId: user.id,
+            values,
+          });
+
+          // Update the form's order number with the generated one
+          form.setValue('orderNumber', orderNumber);
+          values = { ...values, orderNumber };
+        }
+
+        setIsSaving(false);
+
+        const storeCode = storeCodeMap[values.storeId] ?? values.storeId;
+        const formattedData = formatOrderData(values, { company, storeCode });
+        setDocumentData(formattedData);
+        setCurrentStep('preview');
+      } catch (error) {
+        setIsSaving(false);
+        console.error('Error generating preview:', error);
+        setPdfError(
+          error instanceof Error
+            ? error.message
+            : 'Ocorreu um erro ao gerar a pré-visualização.'
+        );
+      }
+    },
+    [orgId, company, storeCodeMap, form, isEditMode, documentId]
+  );
 
   const handleDownload = useCallback(
     async (url: string | null) => {
@@ -121,22 +191,22 @@ export function SalesForm() {
   );
 
   const handleBackToForm = useCallback(() => {
-    const currentValues = form.getValues(); // Get all current form values
-    form.reset(currentValues); // Reset form with current values
+    const currentValues = form.getValues();
+    form.reset(currentValues);
     setCurrentStep('details');
     setDocumentData(null);
     setPdfError(null);
   }, [form]);
 
   const handleFillTestData = useCallback(() => {
-    fillFormWithTestData(form);
+    fillFormWithTestData(form, stores[0]?.id);
     setCurrentStep('details');
-  }, [form]);
+  }, [form, stores]);
 
   return (
     <FormProvider {...form}>
       <div className="space-y-8">
-        {process.env.NODE_ENV === 'development' && (
+        {process.env.NODE_ENV === 'development' && !isEditMode && (
           <Button
             type="button"
             onClick={handleFillTestData}
@@ -148,7 +218,11 @@ export function SalesForm() {
         )}
 
         {currentStep === 'store' && (
-          <StoreSelection form={form} onStoreSelect={handleStoreSelect} />
+          <StoreSelection
+            form={form}
+            stores={stores}
+            onStoreSelect={handleStoreSelect}
+          />
         )}
 
         {currentStep === 'salesType' && (
@@ -163,7 +237,6 @@ export function SalesForm() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit((values) => {
-                // Check the sales type and route accordingly
                 if (values.salesType === 'delivery') {
                   setCurrentStep('payments');
                 } else {
@@ -186,6 +259,7 @@ export function SalesForm() {
                 type="submit"
                 size={'lg'}
                 disabled={
+                  isSaving ||
                   !form.formState.isValid ||
                   (form.watch('salesType') === 'delivery' &&
                     !form.watch('sameAddress') &&
@@ -196,7 +270,9 @@ export function SalesForm() {
               >
                 {form.watch('salesType') === 'delivery'
                   ? 'Continuar para Pagamentos'
-                  : 'Pré-visualizar Documento'}
+                  : isSaving
+                    ? 'A guardar...'
+                    : 'Pré-visualizar Documento'}
               </Button>
             </form>
           </Form>
@@ -221,8 +297,8 @@ export function SalesForm() {
                   >
                     Voltar
                   </Button>
-                  <Button type="submit" size={'lg'}>
-                    Pré-visualizar Documento
+                  <Button type="submit" size={'lg'} disabled={isSaving}>
+                    {isSaving ? 'A guardar...' : 'Pré-visualizar Documento'}
                   </Button>
                 </div>
               </form>
