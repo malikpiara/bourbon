@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Bourbn',
-    short_name: 'Bourbn',
+    name: 'Burbbon',
+    short_name: 'Burbbon',
     description: 'Aplicação de Gestão da Octosólido',
     start_url: '/',
     display: 'standalone',
