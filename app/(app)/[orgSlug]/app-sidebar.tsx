@@ -4,6 +4,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { FilePlus, History, LogOut, Palette } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { useIsElectron } from '@/hooks/useIsElectron';
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +30,7 @@ export function AppSidebar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const isElectron = useIsElectron();
 
   const handleSignOut = async () => {
     const supabase = createClient();
@@ -43,7 +45,7 @@ export function AppSidebar({
       icon: FilePlus,
     },
     {
-      label: 'Histórico',
+      label: 'Vendas',
       href: `/${orgSlug}/sales`,
       icon: History,
     },
@@ -60,7 +62,7 @@ export function AppSidebar({
 
   return (
     <Sidebar>
-      <SidebarHeader className="px-4 py-4">
+      <SidebarHeader className={`px-4 py-4 ${isElectron ? 'pt-14' : ''}`}>
         <span className="font-bold text-lg">{orgName}</span>
       </SidebarHeader>
       <SidebarContent>

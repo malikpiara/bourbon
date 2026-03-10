@@ -6,6 +6,7 @@ import nextTypescript from 'eslint-config-next/typescript';
 import prettierConfig from 'eslint-config-prettier/flat';
 
 const eslintConfig = [
+  { ignores: ['dist-electron/**', 'electron/**', '.electron-staging/**'] },
   ...nextConfig,
   ...nextCoreWebVitals,
   ...nextTypescript,

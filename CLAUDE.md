@@ -9,7 +9,9 @@ Burbbon is a Next.js SaaS that generates PDF sales documents (delivery orders an
 - **Forms:** React Hook Form + Zod (discriminated union on `salesType`)
 - **PDF:** @react-pdf/renderer (client-side generation)
 - **UI:** Radix UI / shadcn components (including sidebar), Tailwind CSS
+- **Desktop:** Electron + electron-builder (macOS DMG, Windows NSIS installer)
 - **Analytics:** PostHog
+- **CI:** GitHub Actions (Electron builds for macOS + Windows)
 - **Package manager:** pnpm
 
 ## Project Structure
@@ -19,6 +21,7 @@ app/
   (auth)/             → Login, password reset (unauthenticated)
   (app)/[orgSlug]/    → Authenticated org-scoped routes
     app-sidebar.tsx   → Sidebar navigation (conditionally shows Style Guide)
+    window-toolbar.tsx → ElectronControls (fixed drag bar) + WindowToolbar (web header)
     sales/new/        → SalesForm (create new sale)
     sales/            → Sales history list
     sales/[id]/       → Sale detail/edit + PDF view
@@ -29,7 +32,8 @@ components/
   documents/          → PDF document components (OrderDocument, DirectSales, PDFViewer)
   forms/sales/        → Multi-step sales form (StoreSelection, CustomerSection, ProductTable, PaymentSection)
   ui/                 → shadcn/Radix primitives (sidebar, sheet, tooltip, separator, etc.)
-hooks/                → Custom React hooks (use-mobile)
+hooks/
+  useIsElectron.ts    → Detects Electron runtime via preload flag
 lib/
   constants.ts        → Business config: payment types, VAT, max quantity
   schema.ts           → Zod validation schemas (discriminated union: direct vs delivery)
@@ -49,7 +53,16 @@ types/
 utils/
   format/             → Formatting helpers (phone, postal code, capitalisation, orderData transform)
   generateOrderNumber.ts → Non-sequential order number generator (YYMM-XXXX)
+electron/
+  main.ts             → Main process (embedded Next.js server on 127.0.0.1:3456)
+  preload.ts          → Preload script (exposes isElectron flag)
+  prep.mjs            → Cross-platform staging script for electron-builder
+  tsconfig.json       → TypeScript config for main/preload
+  icon.icns           → macOS app icon
+  icon.ico            → Windows app icon
 polyfills.ts          → Promise.withResolvers polyfill (imported in providers.tsx)
+.github/workflows/
+  electron-build.yml  → CI: builds macOS DMG + Windows NSIS installer
 ```
 
 ## Commands
@@ -60,6 +73,11 @@ pnpm build        # Production build (also runs type checking)
 pnpm type-check   # TypeScript type checking only (no build output)
 pnpm lint         # ESLint
 pnpm format       # Prettier
+
+# Electron
+pnpm electron:dev      # Build + run in Electron (dev)
+pnpm electron:pack     # Build macOS DMG → release/
+pnpm electron:pack-win # Build Windows NSIS installer → release/
 ```
 
 ## Conventions
@@ -81,6 +99,17 @@ pnpm format       # Prettier
 - **Sidebar-based:** Uses shadcn `SidebarProvider` + `Sidebar` component in the org layout. Collapsible via `SidebarTrigger` button or `Cmd+B` keyboard shortcut. On mobile, renders as a sheet overlay.
 - **AppSidebar:** Client component (`app/(app)/[orgSlug]/app-sidebar.tsx`) with nav links, sign-out button, and conditionally visible Style Guide link (gated by user ID).
 - **Style Guide:** Internal page at `/[orgSlug]/style-guide` for previewing UI components and testing design tokens (fonts, primary color hue, border radius). Only visible in the sidebar for the designated developer user ID.
+
+## Electron Architecture
+
+- **Embedded server:** The Electron main process starts a Next.js production server on `127.0.0.1:3456` and loads that URL in a `BrowserWindow`. Uses `output: 'standalone'` for a minimal build.
+- **Staging directory:** `electron/prep.mjs` copies the standalone build into `.electron-staging/`, strips broken symlinks and unnecessary `package.json` fields. electron-builder packages from this directory (`directories.app`).
+- **Detection:** `useIsElectron()` hook (`hooks/useIsElectron.ts`) uses `useSyncExternalStore` to check `window.electronAPI.isElectron` (set by preload script). Returns `false` on server/web.
+- **Window toolbar (Electron):** `ElectronControls` renders a full-width fixed drag bar (`position: fixed; top: 0; z-index: 50`) with sidebar trigger + back/forward arrows. On web, `WindowToolbar` renders the original header instead.
+- **Drag regions:** Use `.electron-drag` / `.electron-no-drag` CSS classes. Critical: `electron-no-drag` only works when it is a **DOM descendant** of an `electron-drag` element. Never use them as siblings.
+- **Platform titlebar:** macOS uses `titleBarStyle: 'hiddenInset'` with custom `trafficLightPosition`. Windows uses `titleBarStyle: 'hidden'` with native `titleBarOverlay`.
+- **Environment:** `.env.production` is copied into the staging directory. The main process loads it at startup for the packaged app. All vars are `NEXT_PUBLIC_*` (inlined at build time, runtime loading is a fallback).
+- **CI:** GitHub Actions builds macOS DMG and Windows NSIS installer. No code signing initially (SmartScreen warning on Windows).
 
 ## Auth Architecture
 
@@ -111,3 +140,6 @@ pnpm format       # Prettier
 - **Supabase join types:** When querying with `.select('..., table(cols)')`, the joined data may be inferred as an array. Use explicit interfaces and cast `data as YourType` to handle this.
 - **ESLint config:** `eslint-config-next@16` exports native flat config arrays. Do not use `FlatCompat` — it causes circular JSON errors. Use `eslint-config-prettier/flat` (not the default export). The lint script is `eslint .` (not `next lint`, which is broken in Next.js 16).
 - **Order numbers:** Generated client-side via `generateOrderNumber()` (format: `YYMM-XXXX`). `orderNumber` in the Zod schema accepts `string | number` and transforms to string. The `UNIQUE(org_id, order_number)` constraint handles collisions.
+- **Electron `asar`:** Must be `true` (default). Setting `asar: false` causes EMFILE errors on macOS because electron-builder copies thousands of individual files (lucide-react alone has ~4,500). Next.js standalone works fine inside asar archives.
+- **Electron drag regions:** `-webkit-app-region: no-drag` only cancels drag when nested inside a `-webkit-app-region: drag` element in the DOM tree. Sibling elements with `no-drag` will NOT cancel a drag region from another subtree.
+- **Electron prep script:** Must be cross-platform (Node.js, not shell). pnpm's standalone output contains broken symlinks that need cleanup. The staging `package.json` must not contain `build`, `scripts`, `lint-staged`, or `pnpm` fields.

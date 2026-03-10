@@ -9,7 +9,48 @@
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "electron:build-main": "tsc -p electron/tsconfig.json",
+    "electron:prep": "node electron/prep.mjs && pnpm electron:build-main && node -e \"require('fs').cpSync('dist-electron','.electron-staging/dist-electron',{recursive:true})\"",
+    "electron:dev": "pnpm build && pnpm electron:prep && electron .electron-staging/dist-electron/main.js",
+    "electron:pack": "pnpm build && pnpm electron:prep && electron-builder --mac",
+    "electron:pack-win": "pnpm build && pnpm electron:prep && electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.octosolido.burbbon",
+    "productName": "Burbbon",
+    "directories": {
+      "app": ".electron-staging",
+      "output": "release",
+      "buildResources": "electron"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "electron/icon.icns",
+      "category": "public.app-category.business"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "electron/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "asar": true,
+    "npmRebuild": false,
+    "extraMetadata": {
+      "main": "dist-electron/main.js"
+    }
   },
   "lint-staged": {
     "*.{ts,tsx}": "eslint --fix",
@@ -62,6 +103,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "electron": "^40.8.0",
+    "electron-builder": "^26.8.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",

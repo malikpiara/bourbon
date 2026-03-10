@@ -101,7 +101,7 @@ export function SalesHistoryClient({
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight">Histórico</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Vendas</h1>
         <Button onClick={() => router.push(`/${orgSlug}/sales/new`)}>
           Nova Venda
         </Button>
@@ -118,9 +118,7 @@ export function SalesHistoryClient({
         <select
           value={salesTypeFilter}
           onChange={(e) =>
-            setSalesTypeFilter(
-              e.target.value as 'all' | 'direct' | 'delivery'
-            )
+            setSalesTypeFilter(e.target.value as 'all' | 'direct' | 'delivery')
           }
           className="h-11 rounded-lg border border-input bg-background px-3 py-2 text-sm"
         >
@@ -162,9 +160,7 @@ export function SalesHistoryClient({
                 <TableRow
                   key={doc.id}
                   className="cursor-pointer hover:bg-gray-50"
-                  onClick={() =>
-                    router.push(`/${orgSlug}/sales/${doc.id}/pdf`)
-                  }
+                  onClick={() => router.push(`/${orgSlug}/sales/${doc.id}/pdf`)}
                 >
                   <TableCell className="font-mono text-sm">
                     {doc.order_number}
@@ -232,9 +228,7 @@ export function SalesHistoryClient({
               size="sm"
               disabled={currentPage <= 1}
               onClick={() =>
-                router.push(
-                  `/${orgSlug}/sales?page=${currentPage - 1}`
-                )
+                router.push(`/${orgSlug}/sales?page=${currentPage - 1}`)
               }
             >
               Anterior
@@ -244,9 +238,7 @@ export function SalesHistoryClient({
               size="sm"
               disabled={currentPage >= totalPages}
               onClick={() =>
-                router.push(
-                  `/${orgSlug}/sales?page=${currentPage + 1}`
-                )
+                router.push(`/${orgSlug}/sales?page=${currentPage + 1}`)
               }
             >
               Seguinte
